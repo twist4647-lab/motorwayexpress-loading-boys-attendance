@@ -23,6 +23,14 @@
             </div>
         </div>
 
+        <!-- Add New Name Section -->
+        <div class="bg-gray-50 p-4 rounded-lg mb-6 flex flex-col md:flex-row gap-3 items-center border">
+            <input type="text" id="newNameInput" placeholder="Enter new personnel name..." class="border p-2 rounded w-full md:w-auto flex-1 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <button onclick="addNewPersonnel()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition w-full md:w-auto">
+                + Add Personnel
+            </button>
+        </div>
+
         <!-- Roster Table -->
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
@@ -58,11 +66,11 @@
     </div>
 
     <!-- Signature Modal -->
-    <div id="signatureModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-50">
+    <div id="signatureModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-lg p-6 max-w-md w-full">
             <h3 class="text-lg font-bold mb-2 text-gray-800" id="modalName">Sign Here</h3>
             <div class="border rounded bg-gray-50 mb-4">
-                <canvas id="canvas" class="w-full h-44 border-dashed border-2 border-gray-300 rounded"></canvas>
+                <canvas id="canvas" class="w-full h-40 border-dashed border-2 border-gray-300"></canvas>
             </div>
             <div class="flex justify-end gap-2">
                 <button onclick="clearSignatureCanvas()" class="px-3 py-1 text-gray-600 border rounded">Clear</button>
@@ -73,8 +81,8 @@
     </div>
 
     <script>
-        // Setup initial personnel list
-        const roster = [
+        // Initial roster or load from localStorage if custom ones were added
+        let roster = JSON.parse(localStorage.getItem('motorway_roster')) || [
             "Patrick Apawudza",
             "John Njoku",
             "Ayirebi Wise",
@@ -123,6 +131,23 @@
             });
         }
 
+        // Add New Personnel Function
+        function addNewPersonnel() {
+            const input = document.getElementById('newNameInput');
+            const newName = input.value.trim();
+
+            if (!newName) {
+                alert("Please enter a valid name.");
+                return;
+            }
+
+            roster.push(newName);
+            localStorage.setItem('motorway_roster', JSON.stringify(roster));
+            input.value = '';
+            initTable();
+            alert(`${newName} has been added to the roster!`);
+        }
+
         // Handle Status and Automatic Timestamping
         function handleStatusChange(index) {
             const status = document.getElementById(`status-${index}`).value;
@@ -136,18 +161,7 @@
             }
         }
 
-        // Modal Canvas Control & Mobile Resizing
-        function resizeCanvas() {
-            const canvas = document.getElementById('canvas');
-            const ratio = Math.max(window.devicePixelRatio || 1, 1);
-            canvas.width = canvas.offsetWidth * ratio;
-            canvas.height = canvas.offsetHeight * ratio;
-            canvas.getContext("2d").scale(ratio, ratio);
-            if (signaturePadInstance) {
-                signaturePadInstance.clear();
-            }
-        }
-
+        // Modal Canvas Control
         function openSignatureModal(index) {
             currentActiveUserIndex = index;
             document.getElementById('modalName').innerText = `Sign for: ${roster[index]}`;
@@ -156,8 +170,9 @@
             const canvas = document.getElementById('canvas');
             if (!signaturePadInstance) {
                 signaturePadInstance = new SignaturePad(canvas);
+            } else {
+                signaturePadInstance.clear();
             }
-            resizeCanvas();
         }
 
         function closeSignatureModal() {
