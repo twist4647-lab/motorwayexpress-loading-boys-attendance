@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motorway Express - Attendance Tracker</title>
+    <!-- Tailwind CSS for Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Signature Pad Library -->
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row justify-between items-center border-b pb-4 mb-6">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">Motorway Express</h1>
+                <p class="text-sm text-gray-500">Attendance & Signature Tracker</p>
+            </div>
+            <div class="mt-4 md:mt-0 flex items-center gap-4">
+                <input type="date" id="attendanceDate" class="border p-2 rounded text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+        </div>
+
+        <!-- Roster Table -->
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50 border-b">
+                        <th class="p-3 text-sm font-semibold text-gray-600">#</th>
+                        <th class="p-3 text-sm font-semibold text-gray-600">Name</th>
+                        <th class="p-3 text-sm font-semibold text-gray-600">Status</th>
+                        <th class="p-3 text-sm font-semibold text-gray-600">Time</th>
+                        <th class="p-3 text-sm font-semibold text-gray-600">Signature</th>
+                    </tr>
+                </thead>
+                <tbody id="rosterTable">
+                    <!-- Dynamic Rows Insertion -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-6 flex flex-wrap gap-4 justify-between items-center border-t pt-4">
+            <button onclick="saveAttendance()" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-lg shadow transition">
+                Save Attendance
+            </button>
+            <div class="flex gap-2">
+                <button onclick="exportToCSV()" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg shadow transition">
+                    Export to Excel (.CSV)
+                </button>
+                <button onclick="verifyPinAndClear()" class="bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-2 rounded-lg shadow transition">
+                    Reset
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signature Modal -->
+    <div id="signatureModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full">
+            <h3 class="text-lg font-bold mb-2 text-gray-800" id="modalName">Sign Here</h3>
+            <div class="border rounded bg-gray-50 mb-4">
+                <canvas id="canvas" class="w-full h-44 border-dashed border-2 border-gray-300 rounded"></canvas>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button onclick="clearSignatureCanvas()" class="px-3 py-1 text-gray-600 border rounded">Clear</button>
+                <button onclick="closeSignatureModal()" class="px-3 py-1 bg-gray-300 rounded">Cancel</button>
+                <button onclick="saveSignature()" class="px-4 py-1 bg-blue-600 text-white rounded">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Setup initial personnel list
+        const roster = [
+            "Patrick Apawudza",
+            "John Njoku",
+            "Ayirebi Wise",
+            "Godwin Horsu",
+            "Godwin Kyekye",
+            "Godfred OK"
+        ];
+
+        let signaturePads = {};
+        let currentActiveUserIndex = null;
+        let signaturePadInstance = null;
+        const DEFAULT_PIN = "1234"; // Default security PIN
+
+        // Set Default Date to Today
+        document.getElementById('attendanceDate').valueAsDate = new Date();
+
+        // Initialize Table
+        function initTable() {
+            const tableBody = document.getElementById('rosterTable');
+            tableBody.innerHTML = '';
+
+            roster.forEach((name, index) => {
+                const row = document.createElement('tr');
+                row.className = 'border-b hover:bg-gray-50';
+                row.innerHTML = `
+                    <td class="p-3 text-gray-500">${index + 1}</td>
+                    <td class="p-3 font-medium text-gray-800">${name}</td>
+                    <td class="p-3">
+                        <select id="status-${index}" onchange="handleStatusChange(${index})" class="border rounded p-1 text-sm bg-white focus:ring-2 focus:ring-blue-400">
+                            <option value="Absent">Absent</option>
+                            <option value="Present">Present</option>
+                            <option value="Late">Late</option>
+                        </select>
+                    </td>
+                    <td class="p-3 text-sm text-gray-500" id="time-${index}">-</td>
+                    <td class="p-3">
+                        <div class="flex items-center gap-2">
+                            <button onclick="openSignatureModal(${index})" class="text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 px-2 py-1 rounded">
+                                Sign
+                            </button>
+                            <span id="sig-status-${index}" class="text-xs text-red-500">Unsigned</span>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Handle Status and Automatic Timestamping
+        function handleStatusChange(index) {
+            const status = document.getElementById(`status-${index}`).value;
+            const timeCell = document.getElementById(`time-${index}`);
+            
+            if (status === 'Present' || status === 'Late') {
+                const now = new Date();
+                timeCell.innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            } else {
+                timeCell.innerText = '-';
+            }
+        }
+
+        // Modal Canvas Control & Mobile Resizing
+        function resizeCanvas() {
+            const canvas = document.getElementById('canvas');
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+            if (signaturePadInstance) {
+                signaturePadInstance.clear();
+            }
+        }
+
+        function openSignatureModal(index) {
+            currentActiveUserIndex = index;
+            document.getElementById('modalName').innerText = `Sign for: ${roster[index]}`;
+            document.getElementById('signatureModal').classList.remove('hidden');
+
+            const canvas = document.getElementById('canvas');
+            if (!signaturePadInstance) {
+                signaturePadInstance = new SignaturePad(canvas);
+            }
+            resizeCanvas();
+        }
+
+        function closeSignatureModal() {
+            document.getElementById('signatureModal').classList.add('hidden');
+        }
+
+        function clearSignatureCanvas() {
+            if (signaturePadInstance) signaturePadInstance.clear();
+        }
+
+        function saveSignature() {
+            if (signaturePadInstance.isEmpty()) {
+                alert("Please provide a signature before clicking Done.");
+                return;
+            }
+            const dataUrl = signaturePadInstance.toDataURL();
+            signaturePads[currentActiveUserIndex] = dataUrl;
+
+            const sigStatus = document.getElementById(`sig-status-${currentActiveUserIndex}`);
+            sigStatus.innerText = "Signed ✓";
+            sigStatus.className = "text-xs text-green-600 font-semibold";
+
+            closeSignatureModal();
+        }
+
+        // Save Data to Local Storage
+        function saveAttendance() {
+            const selectedDate = document.getElementById('attendanceDate').value;
+            const data = roster.map((name, index) => ({
+                name,
+                status: document.getElementById(`status-${index}`).value,
+                time: document.getElementById(`time-${index}`).innerText,
+                hasSigned: !!signaturePads[index]
+            }));
+
+            localStorage.setItem(`attendance_${selectedDate}`, JSON.stringify(data));
+            alert(`Attendance records saved locally for ${selectedDate}!`);
+        }
+
+        // Export to Excel / CSV
+        function exportToCSV() {
+            const selectedDate = document.getElementById('attendanceDate').value;
+            let csvContent = "data:text/csv;charset=utf-8,Date,Name,Status,Timestamp,Signed\n";
+
+            roster.forEach((name, index) => {
+                const status = document.getElementById(`status-${index}`).value;
+                const time = document.getElementById(`time-${index}`).innerText;
+                const signed = signaturePads[index] ? "Yes" : "No";
+                csvContent += `"${selectedDate}","${name}","${status}","${time}","${signed}"\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Motorway_Express_Attendance_${selectedDate}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Simple PIN Verification for Resetting
+        function verifyPinAndClear() {
+            const inputPin = prompt("Enter Admin PIN to reset current selections:");
+            if (inputPin === DEFAULT_PIN) {
+                signaturePads = {};
+                initTable();
+            } else {
+                alert("Incorrect PIN!");
+            }
+        }
+
+        // Startup Initialization
+        initTable();
+    </script>
+</body>
+</html>
