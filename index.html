@@ -1,399 +1,483 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Motorway Express - Casual Staff Attendance</title>
-    <!-- Tailwind CSS for Styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Signature Pad Library -->
-    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motorway Express - Casual Staff Attendance</title>
+    <!-- Tailwind CSS for Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Signature Pad Library -->
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 </head>
 <body class="bg-gray-100 min-h-screen p-4 md:p-8">
 
-    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-6">
-        <!-- Header & Navigation Switcher -->
-        <div class="flex flex-col md:flex-row justify-between items-center border-b pb-4 mb-6 gap-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-800">Motorway Express</h1>
-                <p class="text-sm text-gray-500">Casual Staff Attendance & Check-In</p>
-            </div>
-            <div class="flex items-center gap-3">
-                <input type="date" id="attendanceDate" class="border p-2 rounded-lg text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <button onclick="switchView('checkin')" id="navCheckin" class="px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white shadow">Check-In</button>
-                <button onclick="checkAdminAccess()" id="navAdmin" class="px-4 py-2 text-sm font-semibold rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">Admin</button>
-            </div>
-        </div>
+    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-6">
+        <!-- Header & Navigation Switcher -->
+        <div class="flex flex-col md:flex-row justify-between items-center border-b pb-4 mb-6 gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">Motorway Express</h1>
+                <p class="text-sm text-gray-500">Casual Staff Attendance & Check-In</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <input type="date" id="attendanceDate" onchange="updateSelectedDayDisplay()" class="border p-2 rounded-lg text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button onclick="switchView('checkin')" id="navCheckin" class="px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white shadow">Check-In</button>
+                <button onclick="checkAdminAccess()" id="navAdmin" class="px-4 py-2 text-sm font-semibold rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">Admin</button>
+            </div>
+        </div>
 
-        <!-- VIEW 1: CHECK-IN PAGE -->
-        <div id="checkinView">
-            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 flex justify-between items-center">
-                <div>
-                    <span class="text-xs uppercase font-bold text-blue-600 tracking-wider">Live Clock</span>
-                    <div id="liveClock" class="text-xl font-bold text-gray-800">--:--:--</div>
-                </div>
-                <div class="text-right">
-                    <span class="text-xs uppercase font-bold text-blue-600 tracking-wider">Date</span>
-                    <div id="liveDate" class="text-sm font-semibold text-gray-800">-</div>
-                </div>
-            </div>
+        <!-- VIEW 1: CHECK-IN PAGE -->
+        <div id="checkinView">
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 flex justify-between items-center">
+                <div>
+                    <span class="text-xs uppercase font-bold text-blue-600 tracking-wider">Live Clock</span>
+                    <div id="liveClock" class="text-xl font-bold text-gray-800">--:--:--</div>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs uppercase font-bold text-blue-600 tracking-wider">Selected Date</span>
+                    <div id="liveDate" class="text-sm font-semibold text-gray-800">-</div>
+                </div>
+            </div>
 
-            <div id="alertBox"></div>
+            <div id="alertBox"></div>
 
-            <form id="checkinForm" onsubmit="handleCheckIn(event)" class="space-y-4">
-                <div>
-                    <label class="block font-semibold text-gray-700 mb-2">Choose Your Name</label>
-                    <select id="staffSelect" required class="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500">
-                        <option value="">-- Select your name --</option>
-                    </select>
-                </div>
+            <form id="checkinForm" onsubmit="handleCheckIn(event)" class="space-y-4">
+                <!-- Name Selection Dropdown -->
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-2" for="staffSelect">Choose Your Name</label>
+                    <select id="staffSelect" required class="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- Select your name --</option>
+                    </select>
+                </div>
 
-                <div>
-                    <label class="block font-semibold text-gray-700 mb-2">Signature</label>
-                    <div class="border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 p-2">
-                        <canvas id="pad" class="w-full h-40 touch-none"></canvas>
-                    </div>
-                    <div class="flex justify-between items-center mt-2">
-                        <button type="button" onclick="clearPad()" class="px-3 py-1 text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg">Clear Signature</button>
-                        <span id="sigWarning" class="text-xs text-red-500 font-medium">Signature required</span>
-                    </div>
-                </div>
+                <!-- Shift Selection Field -->
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-2" for="shiftSelect">Select Shift</label>
+                    <select id="shiftSelect" required class="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500">
+                        <option value="">-- Select Shift --</option>
+                        <option value="DAY"> DAY </option>
+                        <option value="NIGHT"> NIGHT </option>
+                    </select>
+                </div>
 
-                <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow transition">
-                    Submit Check-In
-                </button>
-            </form>
-        </div>
+                <!-- Automatic Day Indicator -->
+                <div class="bg-gray-50 p-3 rounded-lg border flex justify-between items-center">
+                    <span class="text-sm font-semibold text-gray-600">Check-In Day:</span>
+                    <span id="autoDayBadge" class="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-bold rounded-lg">-</span>
+                </div>
 
-        <!-- VIEW 2: ADMIN PANEL -->
-        <div id="adminView" class="hidden space-y-6">
-            <!-- Admin Actions -->
-            <div class="bg-gray-50 border p-4 rounded-xl flex flex-wrap justify-between items-center gap-4">
-                <div>
-                    <h3 class="font-bold text-gray-800">Admin Control Hub</h3>
-                    <p class="text-sm text-gray-500">Manage roster, inspect summaries, or export logs.</p>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="changePinPrompt()" class="bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow">
-                        Change Admin PIN
-                    </button>
-                    <button onclick="exportToCSV()" class="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow">
-                        Download Records (CSV)
-                    </button>
-                    <button onclick="switchView('checkin')" class="bg-gray-300 hover:bg-gray-400 text-gray-800 text-sm font-semibold px-4 py-2 rounded-lg">
-                        Close Admin
-                    </button>
-                </div>
-            </div>
+                <!-- Signature Pad -->
+                <div>
+                    <label class="block font-semibold text-gray-700 mb-2">Signature</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 p-2">
+                        <canvas id="pad" class="w-full h-40 touch-none"></canvas>
+                    </div>
+                    <div class="flex justify-between items-center mt-2">
+                        <button type="button" onclick="clearPad()" class="px-3 py-1 text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg">Clear Signature</button>
+                        <span id="sigWarning" class="text-xs text-red-500 font-medium">Signature required</span>
+                    </div>
+                </div>
 
-            <!-- Staff Management Card -->
-            <div class="bg-white border rounded-xl p-4 shadow-sm">
-                <h3 class="font-bold text-gray-800 mb-3">Manage Staff Roster</h3>
-                <div class="flex gap-2 mb-4">
-                    <input type="text" id="newStaffInput" placeholder="Enter new staff name..." class="flex-1 border p-2 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
-                    <button onclick="addStaff()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg">Add Name</button>
-                </div>
-                <div class="max-h-48 overflow-y-auto border rounded-lg">
-                    <table class="w-full text-left text-sm">
-                        <tbody id="adminStaffTable"></tbody>
-                    </table>
-                </div>
-            </div>
+                <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow transition">
+                    Submit Check-In
+                </button>
+            </form>
+        </div>
 
-            <!-- Summary Card -->
-            <div class="bg-white border rounded-xl p-4 shadow-sm">
-                <h3 class="font-bold text-gray-800 mb-3">Days Present Summary</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead>
-                            <tr class="bg-gray-100 border-b">
-                                <th class="p-2">Name</th>
-                                <th class="p-2">Unique Days Present</th>
-                                <th class="p-2">Total Check-Ins</th>
-                            </tr>
-                        </thead>
-                        <tbody id="summaryTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
+        <!-- VIEW 2: ADMIN PANEL -->
+        <div id="adminView" class="hidden space-y-6">
+            <!-- Admin Actions -->
+            <div class="bg-gray-50 border p-4 rounded-xl flex flex-wrap justify-between items-center gap-4">
+                <div>
+                    <h3 class="font-bold text-gray-800">Admin Control Hub</h3>
+                    <p class="text-sm text-gray-500">Manage roster, inspect summaries, or export logs.</p>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="changePinPrompt()" class="bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow">
+                        Change Admin PIN
+                    </button>
+                    <button onclick="exportToCSV()" class="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow">
+                        Download Records (CSV)
+                    </button>
+                    <button onclick="switchView('checkin')" class="bg-gray-300 hover:bg-gray-400 text-gray-800 text-sm font-semibold px-4 py-2 rounded-lg">
+                        Close Admin
+                    </button>
+                </div>
+            </div>
 
-            <!-- Detailed Logs Card -->
-            <div class="bg-white border rounded-xl p-4 shadow-sm">
-                <h3 class="font-bold text-gray-800 mb-3">All Check-In Logs</h3>
-                <div class="overflow-x-auto max-h-64">
-                    <table class="w-full text-left text-sm">
-                        <thead>
-                            <tr class="bg-gray-100 border-b">
-                                <th class="p-2">Name</th>
-                                <th class="p-2">Date</th>
-                                <th class="p-2">Time</th>
-                                <th class="p-2">Signature</th>
-                            </tr>
-                        </thead>
-                        <tbody id="logsTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+            <!-- Staff Management Card -->
+            <div class="bg-white border rounded-xl p-4 shadow-sm">
+                <h3 class="font-bold text-gray-800 mb-3">Manage Staff Roster</h3>
+                <div class="flex gap-2 mb-4">
+                    <input type="text" id="newStaffInput" placeholder="Enter new staff name..." class="flex-1 border p-2 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                    <button onclick="addStaff()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg">Add Name</button>
+                </div>
+                <div class="max-h-48 overflow-y-auto border rounded-lg">
+                    <table class="w-full text-left text-sm">
+                        <tbody id="adminStaffTable"></tbody>
+                    </table>
+                </div>
+            </div>
 
-    <script>
-        // Data Initialization from LocalStorage
-        let staffList = JSON.parse(localStorage.getItem('motorway_staff')) || [
-            "Patrick Apawudza",
-            "John Njoku",
-            "Ayirebi Wise",
-            "Godwin Horsu",
-            "Godwin Kyekye",
-            "Godfred OK"
-        ];
+            <!-- Summary Card -->
+            <div class="bg-white border rounded-xl p-4 shadow-sm">
+                <h3 class="font-bold text-gray-800 mb-3">Days Present & Shift Summary</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr class="bg-gray-100 border-b">
+                                <th class="p-2">Name</th>
+                                <th class="p-2">Day Shifts</th>
+                                <th class="p-2">Night Shifts</th>
+                                <th class="p-2">Unique Days Present</th>
+                                <th class="p-2">Total Check-Ins</th>
+                            </tr>
+                        </thead>
+                        <tbody id="summaryTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
 
-        let attendanceLogs = JSON.parse(localStorage.getItem('motorway_logs')) || [];
-        
-        // Retrieve custom PIN or default to "1234"
-        let adminPin = localStorage.getItem('motorway_admin_pin') || "1234";
-        // Default recovery master keyword if PIN is forgotten
-        const MASTER_RECOVERY_CODE = "motorway2026"; 
+            <!-- Detailed Logs Card -->
+            <div class="bg-white border rounded-xl p-4 shadow-sm">
+                <h3 class="font-bold text-gray-800 mb-3">All Check-In Logs</h3>
+                <div class="overflow-x-auto max-h-64">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr class="bg-gray-100 border-b">
+                                <th class="p-2">Name</th>
+                                <th class="p-2">Day of Week</th>
+                                <th class="p-2">Shift</th>
+                                <th class="p-2">Date</th>
+                                <th class="p-2">Time</th>
+                                <th class="p-2">Signature</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        let signaturePad = null;
+    <script>
+        // Default Staff Array
+        const defaultStaff = [
+            "Patrick Apawudza",
+            "John Njoku",
+            "Ayirebi Wise",
+            "Godwin Horsu",
+            "Godwin Kyekye",
+            "Godfred OK"
+        ];
 
-        // Set default date picker value
-        document.getElementById('attendanceDate').valueAsDate = new Date();
+        // Retrieve data from localStorage or fallback to defaults
+        let staffList = JSON.parse(localStorage.getItem('motorway_staff'));
+        if (!staffList || staffList.length === 0) {
+            staffList = defaultStaff;
+            localStorage.setItem('motorway_staff', JSON.stringify(staffList));
+        }
 
-        // Live Clock Loop
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('liveClock').textContent = now.toLocaleTimeString();
-            document.getElementById('liveDate').textContent = now.toLocaleDateString(undefined, {weekday:'long', month:'short', day:'numeric', year:'numeric'});
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
+        let attendanceLogs = JSON.parse(localStorage.getItem('motorway_logs')) || [];
 
-        // Initialize Signature Pad
-        function initSignaturePad() {
-            const canvas = document.getElementById('pad');
-            const ratio = window.devicePixelRatio || 1;
-            canvas.width = canvas.offsetWidth * ratio;
-            canvas.height = canvas.offsetHeight * ratio;
-            canvas.getContext("2d").scale(ratio, ratio);
+        // Admin Security PINs
+        let adminPin = localStorage.getItem('motorway_admin_pin') || "1234";
+        const MASTER_RECOVERY_CODE = "motorway2026";
 
-            if (!signaturePad) {
-                signaturePad = new SignaturePad(canvas);
-            } else {
-                signaturePad.clear();
-            }
-        }
-        window.addEventListener('resize', initSignaturePad);
-        setTimeout(initSignaturePad, 200);
+        let signaturePad = null;
 
-        function clearPad() {
-            if (signaturePad) signaturePad.clear();
-        }
+        // Set default date picker value to today
+        document.getElementById('attendanceDate').valueAsDate = new Date();
 
-        // Populate Check-in Dropdown
-        function populateDropdown() {
-            const select = document.getElementById('staffSelect');
-            select.innerHTML = '<option value="">-- Select your name --</option>';
-            staffList.forEach(name => {
-                const opt = document.createElement('option');
-                opt.value = name;
-                opt.textContent = name;
-                select.appendChild(opt);
-            });
-        }
-        populateDropdown();
+        // Helper function to extract Day Name (e.g. Monday, Tuesday) from Date String
+        function getDayOfWeekName(dateString) {
+            if (!dateString) return '';
+            const parts = dateString.split('-');
+            if (parts.length === 3) {
+                const d = new Date(parts[0], parts[1] - 1, parts[2]);
+                return d.toLocaleDateString(undefined, { weekday: 'long' });
+            }
+            return new Date(dateString).toLocaleDateString(undefined, { weekday: 'long' });
+        }
 
-        // View Switcher (Check-in vs Admin)
-        function switchView(view) {
-            if (view === 'checkin') {
-                document.getElementById('checkinView').classList.remove('hidden');
-                document.getElementById('adminView').classList.add('hidden');
-                document.getElementById('navCheckin').className = "px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white shadow";
-                document.getElementById('navAdmin').className = "px-4 py-2 text-sm font-semibold rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300";
-                setTimeout(initSignaturePad, 50);
-            } else {
-                document.getElementById('checkinView').classList.add('hidden');
-                document.getElementById('adminView').classList.remove('hidden');
-                document.getElementById('navAdmin').className = "px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white shadow";
-                document.getElementById('navCheckin').className = "px-4 py-2 text-sm font-semibold rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300";
-                renderAdminData();
-            }
-        }
+        // Update day indicator and date header whenever date input changes
+        function updateSelectedDayDisplay() {
+            const dateVal = document.getElementById('attendanceDate').value;
+            const dayName = getDayOfWeekName(dateVal);
+            document.getElementById('autoDayBadge').textContent = dayName;
 
-        // Secure PIN Check with Forgot PIN / Recovery Option
-        function checkAdminAccess() {
-            let pin = prompt("Enter Admin PIN:");
-            if (pin === null) return; // Cancelled
+            const parts = dateVal.split('-');
+            let formattedDateStr = dateVal;
+            if (parts.length === 3) {
+                const d = new Date(parts[0], parts[1] - 1, parts[2]);
+                formattedDateStr = d.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+            }
+            document.getElementById('liveDate').textContent = formattedDateStr;
+        }
 
-            if (pin === adminPin) {
-                switchView('admin');
-            } else {
-                // If wrong, check if they want to use the recovery option
-                let choice = confirm("Incorrect PIN!\n\nClick 'OK' if you forgot your PIN and want to use the Recovery Code to reset it, or 'Cancel' to try again.");
-                if (choice) {
-                    let recoveryInput = prompt("Enter Master Recovery Code:");
-                    if (recoveryInput === MASTER_RECOVERY_CODE) {
-                        let newPin = prompt("Recovery successful! Enter your NEW Admin PIN:");
-                        if (newPin && newPin.trim().length > 0) {
-                            adminPin = newPin.trim();
-                            localStorage.setItem('motorway_admin_pin', adminPin);
-                            alert("Admin PIN successfully updated!");
-                            switchView('admin');
-                        } else {
-                            alert("PIN change cancelled (empty input).");
-                        }
-                    } else if (recoveryInput !== null) {
-                        alert("Incorrect Recovery Code!");
-                    }
-                } else {
-                    checkAdminAccess(); // Retry normal PIN
-                }
-            }
-        }
+        // Live Clock Loop
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('liveClock').textContent = now.toLocaleTimeString();
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+        updateSelectedDayDisplay();
 
-        // Change PIN from inside the Admin Panel
-        function changePinPrompt() {
-            let current = prompt("Enter your CURRENT Admin PIN:");
-            if (current === adminPin) {
-                let freshPin = prompt("Enter your NEW Admin PIN:");
-                if (freshPin && freshPin.trim().length > 0) {
-                    adminPin = freshPin.trim();
-                    localStorage.setItem('motorway_admin_pin', adminPin);
-                    alert("Admin PIN updated successfully!");
-                } else {
-                    alert("Operation cancelled.");
-                }
-            } else if (current !== null) {
-                alert("Incorrect current PIN.");
-            }
-        }
+        // Initialize Signature Pad Canvas
+        function initSignaturePad() {
+            const canvas = document.getElementById('pad');
+            const ratio = window.devicePixelRatio || 1;
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
 
-        // Handle Check-In Submission
-        function handleCheckIn(e) {
-            e.preventDefault();
-            const name = document.getElementById('staffSelect').value;
-            const date = document.getElementById('attendanceDate').value;
+            if (!signaturePad) {
+                signaturePad = new SignaturePad(canvas);
+            } else {
+                signaturePad.clear();
+            }
+        }
+        window.addEventListener('resize', initSignaturePad);
+        setTimeout(initSignaturePad, 200);
 
-            if (!name) {
-                showAlert("Please choose your name.", "err");
-                return;
-            }
-            if (signaturePad.isEmpty()) {
-                showAlert("Please provide your signature.", "err");
-                return;
-            }
+        function clearPad() {
+            if (signaturePad) signaturePad.clear();
+        }
 
-            const sigDataUrl = signaturePad.toDataURL();
-            const now = new Date();
-            const time = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+        // Populate Name Dropdown from staffList array
+        function populateDropdown() {
+            const select = document.getElementById('staffSelect');
+            select.innerHTML = '<option value="">-- Select your name --</option>';
+            staffList.forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                select.appendChild(opt);
+            });
+        }
+        populateDropdown();
 
-            attendanceLogs.unshift({
-                name: name,
-                date: date,
-                time: time,
-                signature: sigDataUrl
-            });
+        // View Switcher (Check-in vs Admin)
+        function switchView(view) {
+            if (view === 'checkin') {
+                document.getElementById('checkinView').classList.remove('hidden');
+                document.getElementById('adminView').classList.add('hidden');
+                document.getElementById('navCheckin').className = "px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white shadow";
+                document.getElementById('navAdmin').className = "px-4 py-2 text-sm font-semibold rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300";
+                setTimeout(initSignaturePad, 50);
+            } else {
+                document.getElementById('checkinView').classList.add('hidden');
+                document.getElementById('adminView').classList.remove('hidden');
+                document.getElementById('navAdmin').className = "px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white shadow";
+                document.getElementById('navCheckin').className = "px-4 py-2 text-sm font-semibold rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300";
+                renderAdminData();
+            }
+        }
 
-            localStorage.setItem('motorway_logs', JSON.stringify(attendanceLogs));
-            
-            // Reset form
-            document.getElementById('checkinForm').reset();
-            document.getElementById('attendanceDate').valueAsDate = new Date();
-            signaturePad.clear();
-            showAlert(`Thank you, ${name}. You are successfully checked in!`, "ok");
-        }
+        // Secure PIN Access Control
+        function checkAdminAccess() {
+            let pin = prompt("Enter Admin PIN:");
+            if (pin === null) return;
 
-        function showAlert(msg, type) {
-            const box = document.getElementById('alertBox');
-            const cls = type === 'ok' ? 'bg-green-100 text-green-800 border-green-200' : 'bg-red-100 text-red-800 border-red-200';
-            box.innerHTML = `<div class="p-3 mb-4 border rounded-xl font-medium text-sm ${cls}">${msg}</div>`;
-            setTimeout(() => { box.innerHTML = ''; }, 4000);
-        }
+            if (pin === adminPin) {
+                switchView('admin');
+            } else {
+                let choice = confirm("Incorrect PIN!\n\nClick 'OK' to reset PIN using Recovery Code, or 'Cancel' to try again.");
+                if (choice) {
+                    let recoveryInput = prompt("Enter Master Recovery Code:");
+                    if (recoveryInput === MASTER_RECOVERY_CODE) {
+                        let newPin = prompt("Enter your NEW Admin PIN:");
+                        if (newPin && newPin.trim().length > 0) {
+                            adminPin = newPin.trim();
+                            localStorage.setItem('motorway_admin_pin', adminPin);
+                            alert("Admin PIN successfully updated!");
+                            switchView('admin');
+                        } else {
+                            alert("PIN change cancelled.");
+                        }
+                    } else if (recoveryInput !== null) {
+                        alert("Incorrect Recovery Code!");
+                    }
+                } else {
+                    checkAdminAccess();
+                }
+            }
+        }
 
-        // Admin Management Operations
-        function addStaff() {
-            const input = document.getElementById('newStaffInput');
-            const val = input.value.trim();
-            if (!val) return;
-            if (staffList.map(s => s.toLowerCase()).includes(val.toLowerCase())) {
-                alert("Staff member already exists!");
-                return;
-            }
-            staffList.push(val);
-            staffList.sort((a,b) => a.localeCompare(b));
-            localStorage.setItem('motorway_staff', JSON.stringify(staffList));
-            input.value = '';
-            populateDropdown();
-            renderAdminData();
-        }
+        // Change Admin PIN Prompt
+        function changePinPrompt() {
+            let current = prompt("Enter current Admin PIN:");
+            if (current === adminPin) {
+                let freshPin = prompt("Enter new Admin PIN:");
+                if (freshPin && freshPin.trim().length > 0) {
+                    adminPin = freshPin.trim();
+                    localStorage.setItem('motorway_admin_pin', adminPin);
+                    alert("Admin PIN updated successfully!");
+                } else {
+                    alert("Operation cancelled.");
+                }
+            } else if (current !== null) {
+                alert("Incorrect PIN.");
+            }
+        }
 
-        function removeStaff(name) {
-            if (confirm(`Remove ${name} from the roster?`)) {
-                staffList = staffList.filter(s => s !== name);
-                localStorage.setItem('motorway_staff', JSON.stringify(staffList));
-                populateDropdown();
-                renderAdminData();
-            }
-        }
+        // Handle Form Submission
+        function handleCheckIn(e) {
+            e.preventDefault();
+            const name = document.getElementById('staffSelect').value;
+            const shift = document.getElementById('shiftSelect').value;
+            const date = document.getElementById('attendanceDate').value;
+            const dayOfWeek = getDayOfWeekName(date);
 
-        function renderAdminData() {
-            // Render Staff Table
-            const staffTbody = document.getElementById('adminStaffTable');
-            staffTbody.innerHTML = staffList.map(s => `
-                <tr class="border-b">
-                    <td class="p-2 font-medium">${s}</td>
-                    <td class="p-2 text-right">
-                        <button onclick="removeStaff('${s}')" class="px-2 py-1 bg-red-100 text-red-600 rounded text-xs font-bold hover:bg-red-200">Remove</button>
-                    </td>
-                </tr>
-            `).join('') || `<tr><td class="p-2 text-gray-500">No staff found.</td></tr>`;
+            if (!name) {
+                showAlert("Please choose your name.", "err");
+                return;
+            }
+            if (!shift) {
+                showAlert("Please select a shift.", "err");
+                return;
+            }
+            if (signaturePad.isEmpty()) {
+                showAlert("Please provide your signature.", "err");
+                return;
+            }
 
-            // Calculate Summary (Days Present & Total Check-ins)
-            let stats = {};
-            staffList.forEach(s => stats[s] = { days: new Set(), total: 0 });
-            attendanceLogs.forEach(log => {
-                if (!stats[log.name]) stats[log.name] = { days: new Set(), total: 0 };
-                stats[log.name].days.add(log.date);
-                stats[log.name].total += 1;
-            });
+            const sigDataUrl = signaturePad.toDataURL();
+            const now = new Date();
+            const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-            const summaryTbody = document.getElementById('summaryTableBody');
-            summaryTbody.innerHTML = Object.keys(stats).map(name => `
-                <tr class="border-b">
-                    <td class="p-2 font-medium">${name}</td>
-                    <td class="p-2">${stats[name].days.size}</td>
-                    <td class="p-2">${stats[name].total}</td>
-                </tr>
-            `).join('');
+            attendanceLogs.unshift({
+                name: name,
+                dayOfWeek: dayOfWeek,
+                shift: shift,
+                date: date,
+                time: time,
+                signature: sigDataUrl
+            });
 
-            // Render Logs Table
-            const logsTbody = document.getElementById('logsTableBody');
-            logsTbody.innerHTML = attendanceLogs.map(r => `
-                <tr class="border-b">
-                    <td class="p-2 font-medium">${r.name}</td>
-                    <td class="p-2">${r.date}</td>
-                    <td class="p-2">${r.time}</td>
-                    <td class="p-2"><img src="${r.signature}" class="h-8 border bg-white rounded"></td>
-                </tr>
-            `).join('') || `<tr><td colspan="4" class="p-2 text-gray-500">No attendance records yet.</td></tr>`;
-        }
+            localStorage.setItem('motorway_logs', JSON.stringify(attendanceLogs));
 
-        // Export to CSV Spreadsheet
-        function exportToCSV() {
-            if (attendanceLogs.length === 0) {
-                alert("No records to export yet.");
-                return;
-            }
-            let csv = "Name,Date,Time\n";
-            attendanceLogs.forEach(r => {
-                csv += `"${r.name}","${r.date}","${r.time}"\n`;
-            });
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = `Motorway_Express_Attendance_${new Date().toISOString().slice(0,10)}.csv`;
-            link.click();
-        }
-    </script>
+            // Reset form
+            document.getElementById('checkinForm').reset();
+            document.getElementById('attendanceDate').valueAsDate = new Date();
+            updateSelectedDayDisplay();
+            signaturePad.clear();
+
+            showAlert(`Thank you, ${name}. Checked in for ${dayOfWeek} (${shift} Shift)!`, "ok");
+        }
+
+        function showAlert(msg, type) {
+            const box = document.getElementById('alertBox');
+            const cls = type === 'ok' ? 'bg-green-100 text-green-800 border-green-200' : 'bg-red-100 text-red-800 border-red-200';
+            box.innerHTML = `<div class="p-3 mb-4 border rounded-xl font-medium text-sm ${cls}">${msg}</div>`;
+            setTimeout(() => { box.innerHTML = ''; }, 4000);
+        }
+
+        // Add New Staff Member
+        function addStaff() {
+            const input = document.getElementById('newStaffInput');
+            const val = input.value.trim();
+            if (!val) return;
+
+            if (staffList.map(s => s.toLowerCase()).includes(val.toLowerCase())) {
+                alert("Staff member already exists!");
+                return;
+            }
+
+            staffList.push(val);
+            staffList.sort((a, b) => a.localeCompare(b));
+            localStorage.setItem('motorway_staff', JSON.stringify(staffList));
+            input.value = '';
+            populateDropdown();
+            renderAdminData();
+        }
+
+        // Remove Staff Member
+        function removeStaff(name) {
+            if (confirm(`Remove ${name} from the roster?`)) {
+                staffList = staffList.filter(s => s !== name);
+                localStorage.setItem('motorway_staff', JSON.stringify(staffList));
+                populateDropdown();
+                renderAdminData();
+            }
+        }
+
+        // Render Admin Panel Data
+        function renderAdminData() {
+            // Roster Table
+            const staffTbody = document.getElementById('adminStaffTable');
+            staffTbody.innerHTML = staffList.map(s => `
+                <tr class="border-b">
+                    <td class="p-2 font-medium">${s}</td>
+                    <td class="p-2 text-right">
+                        <button onclick="removeStaff('${s}')" class="px-2 py-1 bg-red-100 text-red-600 rounded text-xs font-bold hover:bg-red-200">Remove</button>
+                    </td>
+                </tr>
+            `).join('') || `<tr><td class="p-2 text-gray-500">No staff found.</td></tr>`;
+
+            // Summary Stats
+            let stats = {};
+            staffList.forEach(s => stats[s] = { dayShifts: 0, nightShifts: 0, uniqueDays: new Set(), total: 0 });
+
+            attendanceLogs.forEach(log => {
+                if (!stats[log.name]) stats[log.name] = { dayShifts: 0, nightShifts: 0, uniqueDays: new Set(), total: 0 };
+                if (log.shift === 'DAY') stats[log.name].dayShifts += 1;
+                else if (log.shift === 'NIGHT') stats[log.name].nightShifts += 1;
+                stats[log.name].uniqueDays.add(log.date);
+                stats[log.name].total += 1;
+            });
+
+            const summaryTbody = document.getElementById('summaryTableBody');
+            summaryTbody.innerHTML = Object.keys(stats).map(name => `
+                <tr class="border-b">
+                    <td class="p-2 font-medium">${name}</td>
+                    <td class="p-2 text-amber-700 font-semibold">${stats[name].dayShifts}</td>
+                    <td class="p-2 text-indigo-700 font-semibold">${stats[name].nightShifts}</td>
+                    <td class="p-2 text-blue-700 font-semibold">${stats[name].uniqueDays.size}</td>
+                    <td class="p-2 font-bold">${stats[name].total}</td>
+                </tr>
+            `).join('');
+
+            // Logs Table
+            const logsTbody = document.getElementById('logsTableBody');
+            logsTbody.innerHTML = attendanceLogs.map(r => {
+                const dayName = r.dayOfWeek || getDayOfWeekName(r.date);
+                return `
+                    <tr class="border-b">
+                        <td class="p-2 font-medium">${r.name}</td>
+                        <td class="p-2 font-semibold text-gray-700">${dayName}</td>
+                        <td class="p-2">
+                            <span class="px-2 py-1 text-xs font-bold rounded-full ${r.shift === 'DAY' ? 'bg-amber-100 text-amber-800' : 'bg-indigo-100 text-indigo-800'}">
+                                ${r.shift || 'DAY'}
+                            </span>
+                        </td>
+                        <td class="p-2">${r.date}</td>
+                        <td class="p-2">${r.time}</td>
+                        <td class="p-2"><img src="${r.signature}" class="h-8 border bg-white rounded" alt="Signature"></td>
+                    </tr>
+                `;
+            }).join('') || `<tr><td colspan="6" class="p-2 text-gray-500">No attendance records yet.</td></tr>`;
+        }
+
+        // CSV Exporter
+        function exportToCSV() {
+            if (attendanceLogs.length === 0) {
+                alert("No records to export.");
+                return;
+            }
+
+            let csv = "Name,Day of Week,Shift,Date,Time\n";
+            attendanceLogs.forEach(r => {
+                const dayName = r.dayOfWeek || getDayOfWeekName(r.date);
+                csv += `"${r.name}","${dayName}","${r.shift || 'DAY'}","${r.date}","${r.time}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `Motorway_Express_Attendance_${new Date().toISOString().slice(0, 10)}.csv`;
+            link.click();
+        }
+    </script>
 </body>
 </html>
