@@ -3,20 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Motorway Express - Casual Staff Attendance</title>
+    <title>Hisense - Motorway Express Warehouse Attendance</title>
     <!-- Tailwind CSS for Styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Signature Pad Library -->
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    
+    <style>
+        /* Slow-motion glowing & shimmer pulse animation */
+        @keyframes slowShimmerPulse {
+            0% {
+                opacity: 0.2;
+                transform: scale(0.96);
+                filter: drop-shadow(0 0 0px rgba(37, 99, 235, 0));
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.02);
+                filter: drop-shadow(0 0 25px rgba(37, 99, 235, 0.4));
+            }
+            100% {
+                opacity: 0.2;
+                transform: scale(0.96);
+                filter: drop-shadow(0 0 0px rgba(37, 99, 235, 0));
+            }
+        }
+
+        .animate-slow-shimmer {
+            animation: slowShimmerPulse 2.8s ease-in-out infinite;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 min-h-screen p-4 md:p-8">
 
-    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-6">
+    <!-- INTRO SPLASH SCREEN -->
+    <div id="splashScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 via-white to-gray-100 transition-opacity duration-1000">
+        <div class="text-center px-6 animate-slow-shimmer select-none">
+            <h1 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tight leading-tight">
+                Hisense
+            </h1>
+            <div class="h-1.5 w-32 bg-blue-600 mx-auto my-3 rounded-full shadow-md"></div>
+            <p class="text-xl md:text-3xl font-extrabold text-blue-600 tracking-wider uppercase">
+                Motorway Express Warehouse
+            </p>
+        </div>
+        
+        <!-- Loading Progress Indicator -->
+        <div class="absolute bottom-10 flex flex-col items-center gap-2">
+            <span class="text-xs uppercase tracking-widest text-gray-400 font-semibold">Initializing System...</span>
+            <div class="w-36 h-1 bg-gray-200 rounded-full overflow-hidden">
+                <div class="w-full h-full bg-blue-600 animate-pulse"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div id="mainContainer" class="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-6 opacity-0 transition-opacity duration-700">
         <!-- Header & Navigation Switcher -->
         <div class="flex flex-col md:flex-row justify-between items-center border-b pb-4 mb-6 gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-gray-800">Motorway Express</h1>
-                <p class="text-sm text-gray-500">Casual Staff Attendance & Check-In</p>
+                <p class="text-sm text-gray-500">Hisense Warehouse - Casual Staff Attendance</p>
             </div>
             <div class="flex items-center gap-3">
                 <input type="date" id="attendanceDate" onchange="updateSelectedDayDisplay()" class="border p-2 rounded-lg text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -169,6 +216,26 @@
     </div>
 
     <script>
+        // Automatic Splash Screen Transition Timer (3.5 seconds)
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splashScreen');
+                const main = document.getElementById('mainContainer');
+                
+                // Fade out splash screen
+                splash.style.opacity = '0';
+                
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    // Fade in main app interface
+                    main.classList.remove('opacity-0');
+                    main.classList.add('opacity-100');
+                    // Initialize signature canvas after layout is visible
+                    initSignaturePad();
+                }, 1000);
+            }, 3500);
+        });
+
         // Default Staff Array
         const defaultStaff = [
             "Patrick Apawudza",
@@ -197,7 +264,7 @@
         // Set default date picker value to today
         document.getElementById('attendanceDate').valueAsDate = new Date();
 
-        // Helper function to extract Day Name (e.g. Monday, Tuesday) from Date String
+        // Helper function to extract Day Name from Date String
         function getDayOfWeekName(dateString) {
             if (!dateString) return '';
             const parts = dateString.split('-');
@@ -247,7 +314,6 @@
             }
         }
         window.addEventListener('resize', initSignaturePad);
-        setTimeout(initSignaturePad, 200);
 
         function clearPad() {
             if (signaturePad) signaturePad.clear();
@@ -490,7 +556,7 @@
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = `Motorway_Express_Attendance_Master_${new Date().toISOString().slice(0, 10)}.csv`;
+            link.download = `Hisense_Motorway_Attendance_Master_${new Date().toISOString().slice(0, 10)}.csv`;
             link.click();
         }
 
@@ -546,7 +612,7 @@
             reader.readAsText(file);
         }
 
-        // Clear Local Logs (Option with safety prompt)
+        // Clear Local Logs
         function clearAllLogs() {
             if (confirm("Are you sure you want to clear all archived records? Make sure you have exported your Master CSV first!")) {
                 let doubleCheck = prompt("Type 'DELETE' to confirm clearing all data:");
