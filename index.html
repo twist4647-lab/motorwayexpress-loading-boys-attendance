@@ -30,22 +30,25 @@
             animation: hisenseGlow 3s ease-in-out infinite;
         }
 
-        /* Subtle fade and pulse for the subtitle & truck */
-        @keyframes subPulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
+        /* Fast-moving truck sliding across the screen */
+        @keyframes driveFast {
+            0% {
+                transform: translateX(-120vw);
+            }
+            100% {
+                transform: translateX(120vw);
+            }
         }
 
-        .animate-sub-pulse {
-            animation: subPulse 3s ease-in-out infinite;
+        .animate-drive-fast {
+            animation: driveFast 1.4s linear infinite;
         }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen p-4 md:p-8">
 
     <!-- INTRO SPLASH SCREEN WITH SHOWROOM BACKGROUND -->
-    <div id="splashScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-opacity duration-1000">
+    <div id="splashScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-opacity duration-1000 overflow-hidden">
         <!-- Background Image & Gradient Overlay -->
         <div class="absolute inset-0 z-0">
             <img src="image_f69660.jpg" alt="Hisense Showroom" class="w-full h-full object-cover opacity-50">
@@ -60,13 +63,16 @@
             </h1>
             <div class="h-1.5 w-36 bg-blue-500 mx-auto my-4 rounded-full shadow-lg"></div>
             
-            <!-- Warehouse Subtitle with Truck Icon -->
-            <div class="flex items-center justify-center gap-3 animate-sub-pulse flex-wrap">
-                <p class="text-xl md:text-3xl font-extrabold text-blue-400 tracking-wider uppercase drop-shadow-lg">
-                    Motorway Express Warehouse
-                </p>
-                <!-- Delivery Truck SVG Icon -->
-                <svg class="w-8 h-8 md:w-10 md:h-10 text-blue-400 drop-shadow-lg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <!-- Warehouse Subtitle -->
+            <p class="text-xl md:text-3xl font-extrabold text-blue-400 tracking-wider uppercase drop-shadow-lg">
+                Motorway Express Warehouse
+            </p>
+        </div>
+
+        <!-- Fast Moving Truck Track -->
+        <div class="absolute w-full overflow-hidden h-20 bottom-28 z-10">
+            <div class="absolute animate-drive-fast flex items-center">
+                <svg class="w-16 h-16 md:w-20 md:h-20 text-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.8)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path>
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m10 0a2 2 0 104 0"></path>
                 </svg>
@@ -187,4 +193,468 @@
             <div class="bg-white border rounded-xl p-4 shadow-sm">
                 <h3 class="font-bold text-gray-800 mb-3">Manage Staff Roster</h3>
                 <div class="flex gap-2 mb-4">
-                    <input type="text" id="newStaffInput"
+                    <input type="text" id="newStaffInput" placeholder="Enter new staff name..." class="flex-1 border p-2 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                    <button onclick="addStaff()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg">Add Name</button>
+                </div>
+                <div class="max-h-48 overflow-y-auto border rounded-lg">
+                    <table class="w-full text-left text-sm">
+                        <tbody id="adminStaffTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Summary Card -->
+            <div class="bg-white border rounded-xl p-4 shadow-sm">
+                <h3 class="font-bold text-gray-800 mb-3">Days Present & Shift Summary</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr class="bg-gray-100 border-b">
+                                <th class="p-2">Name</th>
+                                <th class="p-2">Day Shifts</th>
+                                <th class="p-2">Night Shifts</th>
+                                <th class="p-2">Unique Days Present</th>
+                                <th class="p-2">Total Check-Ins</th>
+                            </tr>
+                        </thead>
+                        <tbody id="summaryTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Detailed Logs Card -->
+            <div class="bg-white border rounded-xl p-4 shadow-sm">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="font-bold text-gray-800">All Check-In Logs (<span id="totalLogsCount">0</span>)</h3>
+                </div>
+                <div class="overflow-x-auto max-h-64">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr class="bg-gray-100 border-b">
+                                <th class="p-2">Name</th>
+                                <th class="p-2">Day of Week</th>
+                                <th class="p-2">Shift</th>
+                                <th class="p-2">Date</th>
+                                <th class="p-2">Time</th>
+                                <th class="p-2">Signature</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Automatic Splash Screen Transition Timer (3 seconds)
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splashScreen');
+                const main = document.getElementById('mainContainer');
+                
+                // Fade out splash screen
+                splash.style.opacity = '0';
+                
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    // Fade in main app interface
+                    main.classList.remove('opacity-0');
+                    main.classList.add('opacity-100');
+                    // Initialize signature canvas after layout is visible
+                    initSignaturePad();
+                }, 1000);
+            }, 3000);
+        });
+
+        // Default Staff Array
+        const defaultStaff = [
+            "Patrick Apawudza",
+            "John Njoku",
+            "Ayirebi Wise",
+            "Godwin Horsu",
+            "Godwin Kyekye",
+            "Godfred OK"
+        ];
+
+        // Retrieve data from localStorage or fallback to defaults
+        let staffList = JSON.parse(localStorage.getItem('motorway_staff'));
+        if (!staffList || staffList.length === 0) {
+            staffList = defaultStaff;
+            localStorage.setItem('motorway_staff', JSON.stringify(staffList));
+        }
+
+        let attendanceLogs = JSON.parse(localStorage.getItem('motorway_logs')) || [];
+
+        // Admin Security PINs
+        let adminPin = localStorage.getItem('motorway_admin_pin') || "1234";
+        const MASTER_RECOVERY_CODE = "motorway2026";
+
+        let signaturePad = null;
+
+        // Set default date picker value to today
+        document.getElementById('attendanceDate').valueAsDate = new Date();
+
+        // Helper function to extract Day Name from Date String
+        function getDayOfWeekName(dateString) {
+            if (!dateString) return '';
+            const parts = dateString.split('-');
+            if (parts.length === 3) {
+                const d = new Date(parts[0], parts[1] - 1, parts[2]);
+                return d.toLocaleDateString(undefined, { weekday: 'long' });
+            }
+            return new Date(dateString).toLocaleDateString(undefined, { weekday: 'long' });
+        }
+
+        // Update day indicator and date header whenever date input changes
+        function updateSelectedDayDisplay() {
+            const dateVal = document.getElementById('attendanceDate').value;
+            const dayName = getDayOfWeekName(dateVal);
+            document.getElementById('autoDayBadge').textContent = dayName;
+
+            const parts = dateVal.split('-');
+            let formattedDateStr = dateVal;
+            if (parts.length === 3) {
+                const d = new Date(parts[0], parts[1] - 1, parts[2]);
+                formattedDateStr = d.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+            }
+            document.getElementById('liveDate').textContent = formattedDateStr;
+        }
+
+        // Live Clock Loop
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('liveClock').textContent = now.toLocaleTimeString();
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+        updateSelectedDayDisplay();
+
+        // Initialize Signature Pad Canvas
+        function initSignaturePad() {
+            const canvas = document.getElementById('pad');
+            const ratio = window.devicePixelRatio || 1;
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+
+            if (!signaturePad) {
+                signaturePad = new SignaturePad(canvas);
+            } else {
+                signaturePad.clear();
+            }
+        }
+        window.addEventListener('resize', initSignaturePad);
+
+        function clearPad() {
+            if (signaturePad) signaturePad.clear();
+        }
+
+        // Populate Name Dropdown from staffList array
+        function populateDropdown() {
+            const select = document.getElementById('staffSelect');
+            select.innerHTML = '<option value="">-- Select your name --</option>';
+            staffList.forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                select.appendChild(opt);
+            });
+        }
+        populateDropdown();
+
+        // View Switcher (Check-in vs Admin)
+        function switchView(view) {
+            if (view === 'checkin') {
+                document.getElementById('checkinView').classList.remove('hidden');
+                document.getElementById('adminView').classList.add('hidden');
+                document.getElementById('navCheckin').className = "px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white shadow";
+                document.getElementById('navAdmin').className = "px-4 py-2 text-sm font-semibold rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300";
+                setTimeout(initSignaturePad, 50);
+            } else {
+                document.getElementById('checkinView').classList.add('hidden');
+                document.getElementById('adminView').classList.remove('hidden');
+                document.getElementById('navAdmin').className = "px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white shadow";
+                document.getElementById('navCheckin').className = "px-4 py-2 text-sm font-semibold rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300";
+                renderAdminData();
+            }
+        }
+
+        // Secure PIN Access Control
+        function checkAdminAccess() {
+            let pin = prompt("Enter Admin PIN:");
+            if (pin === null) return;
+
+            if (pin === adminPin) {
+                switchView('admin');
+            } else {
+                let choice = confirm("Incorrect PIN!\n\nClick 'OK' to reset PIN using Recovery Code, or 'Cancel' to try again.");
+                if (choice) {
+                    let recoveryInput = prompt("Enter Master Recovery Code:");
+                    if (recoveryInput === MASTER_RECOVERY_CODE) {
+                        let newPin = prompt("Enter your NEW Admin PIN:");
+                        if (newPin && newPin.trim().length > 0) {
+                            adminPin = newPin.trim();
+                            localStorage.setItem('motorway_admin_pin', adminPin);
+                            alert("Admin PIN successfully updated!");
+                            switchView('admin');
+                        } else {
+                            alert("PIN change cancelled.");
+                        }
+                    } else if (recoveryInput !== null) {
+                        alert("Incorrect Recovery Code!");
+                    }
+                } else {
+                    checkAdminAccess();
+                }
+            }
+        }
+
+        // Change Admin PIN Prompt
+        function changePinPrompt() {
+            let current = prompt("Enter current Admin PIN:");
+            if (current === adminPin) {
+                let freshPin = prompt("Enter new Admin PIN:");
+                if (freshPin && freshPin.trim().length > 0) {
+                    adminPin = freshPin.trim();
+                    localStorage.setItem('motorway_admin_pin', adminPin);
+                    alert("Admin PIN updated successfully!");
+                } else {
+                    alert("Operation cancelled.");
+                }
+            } else if (current !== null) {
+                alert("Incorrect PIN.");
+            }
+        }
+
+        // Handle Form Submission
+        function handleCheckIn(e) {
+            e.preventDefault();
+            const name = document.getElementById('staffSelect').value;
+            const shift = document.getElementById('shiftSelect').value;
+            const date = document.getElementById('attendanceDate').value;
+            const dayOfWeek = getDayOfWeekName(date);
+
+            if (!name) {
+                showAlert("Please choose your name.", "err");
+                return;
+            }
+            if (!shift) {
+                showAlert("Please select a shift.", "err");
+                return;
+            }
+            if (signaturePad.isEmpty()) {
+                showAlert("Please provide your signature.", "err");
+                return;
+            }
+
+            const sigDataUrl = signaturePad.toDataURL();
+            const now = new Date();
+            const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+            // Add new log to the top of accumulated logs
+            attendanceLogs.unshift({
+                id: Date.now(),
+                name: name,
+                dayOfWeek: dayOfWeek,
+                shift: shift,
+                date: date,
+                time: time,
+                signature: sigDataUrl
+            });
+
+            localStorage.setItem('motorway_logs', JSON.stringify(attendanceLogs));
+
+            // Reset form
+            document.getElementById('checkinForm').reset();
+            document.getElementById('attendanceDate').valueAsDate = new Date();
+            updateSelectedDayDisplay();
+            signaturePad.clear();
+
+            showAlert(`Thank you, ${name}. Checked in for ${dayOfWeek} (${shift} Shift)!`, "ok");
+        }
+
+        function showAlert(msg, type) {
+            const box = document.getElementById('alertBox');
+            const cls = type === 'ok' ? 'bg-green-100 text-green-800 border-green-200' : 'bg-red-100 text-red-800 border-red-200';
+            box.innerHTML = `<div class="p-3 mb-4 border rounded-xl font-medium text-sm ${cls}">${msg}</div>`;
+            setTimeout(() => { box.innerHTML = ''; }, 4000);
+        }
+
+        // Add New Staff Member
+        function addStaff() {
+            const input = document.getElementById('newStaffInput');
+            const val = input.value.trim();
+            if (!val) return;
+
+            if (staffList.map(s => s.toLowerCase()).includes(val.toLowerCase())) {
+                alert("Staff member already exists!");
+                return;
+            }
+
+            staffList.push(val);
+            staffList.sort((a, b) => a.localeCompare(b));
+            localStorage.setItem('motorway_staff', JSON.stringify(staffList));
+            input.value = '';
+            populateDropdown();
+            renderAdminData();
+        }
+
+        // Remove Staff Member
+        function removeStaff(name) {
+            if (confirm(`Remove ${name} from the roster?`)) {
+                staffList = staffList.filter(s => s !== name);
+                localStorage.setItem('motorway_staff', JSON.stringify(staffList));
+                populateDropdown();
+                renderAdminData();
+            }
+        }
+
+        // Render Admin Panel Data
+        function renderAdminData() {
+            // Roster Table
+            const staffTbody = document.getElementById('adminStaffTable');
+            staffTbody.innerHTML = staffList.map(s => `
+                <tr class="border-b">
+                    <td class="p-2 font-medium">${s}</td>
+                    <td class="p-2 text-right">
+                        <button onclick="removeStaff('${s}')" class="px-2 py-1 bg-red-100 text-red-600 rounded text-xs font-bold hover:bg-red-200">Remove</button>
+                    </td>
+                </tr>
+            `).join('') || `<tr><td class="p-2 text-gray-500">No staff found.</td></tr>`;
+
+            // Summary Stats
+            let stats = {};
+            staffList.forEach(s => stats[s] = { dayShifts: 0, nightShifts: 0, uniqueDays: new Set(), total: 0 });
+
+            attendanceLogs.forEach(log => {
+                if (!stats[log.name]) stats[log.name] = { dayShifts: 0, nightShifts: 0, uniqueDays: new Set(), total: 0 };
+                if (log.shift === 'DAY') stats[log.name].dayShifts += 1;
+                else if (log.shift === 'NIGHT') stats[log.name].nightShifts += 1;
+                stats[log.name].uniqueDays.add(log.date);
+                stats[log.name].total += 1;
+            });
+
+            const summaryTbody = document.getElementById('summaryTableBody');
+            summaryTbody.innerHTML = Object.keys(stats).map(name => `
+                <tr class="border-b">
+                    <td class="p-2 font-medium">${name}</td>
+                    <td class="p-2 text-amber-700 font-semibold">${stats[name].dayShifts}</td>
+                    <td class="p-2 text-indigo-700 font-semibold">${stats[name].nightShifts}</td>
+                    <td class="p-2 text-blue-700 font-semibold">${stats[name].uniqueDays.size}</td>
+                    <td class="p-2 font-bold">${stats[name].total}</td>
+                </tr>
+            `).join('');
+
+            // Total logs counter update
+            document.getElementById('totalLogsCount').textContent = attendanceLogs.length;
+
+            // Logs Table
+            const logsTbody = document.getElementById('logsTableBody');
+            logsTbody.innerHTML = attendanceLogs.map(r => {
+                const dayName = r.dayOfWeek || getDayOfWeekName(r.date);
+                const sigDisplay = r.signature ? `<img src="${r.signature}" class="h-8 border bg-white rounded" alt="Sig">` : '<span class="text-xs text-gray-400">Imported</span>';
+                return `
+                    <tr class="border-b">
+                        <td class="p-2 font-medium">${r.name}</td>
+                        <td class="p-2 font-semibold text-gray-700">${dayName}</td>
+                        <td class="p-2">
+                            <span class="px-2 py-1 text-xs font-bold rounded-full ${r.shift === 'DAY' ? 'bg-amber-100 text-amber-800' : 'bg-indigo-100 text-indigo-800'}">
+                                ${r.shift || 'DAY'}
+                            </span>
+                        </td>
+                        <td class="p-2">${r.date}</td>
+                        <td class="p-2">${r.time}</td>
+                        <td class="p-2">${sigDisplay}</td>
+                    </tr>
+                `;
+            }).join('') || `<tr><td colspan="6" class="p-2 text-gray-500 text-center">No attendance records yet.</td></tr>`;
+        }
+
+        // CSV Exporter (Exports accumulated dataset)
+        function exportToCSV() {
+            if (attendanceLogs.length === 0) {
+                alert("No records to export.");
+                return;
+            }
+
+            let csv = "Name,Day of Week,Shift,Date,Time\n";
+            attendanceLogs.forEach(r => {
+                const dayName = r.dayOfWeek || getDayOfWeekName(r.date);
+                csv += `"${r.name}","${dayName}","${r.shift || 'DAY'}","${r.date}","${r.time}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `Hisense_Motorway_Attendance_Master_${new Date().toISOString().slice(0, 10)}.csv`;
+            link.click();
+        }
+
+        // CSV Importer (Appends external records into existing archive)
+        function importCSV(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const text = evt.target.result;
+                const lines = text.split('\n');
+                let addedCount = 0;
+
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
+
+                    // Parse quoted CSV fields
+                    const matches = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+                    if (matches && matches.length >= 5) {
+                        const name = matches[0].replace(/"/g, '').trim();
+                        const dayOfWeek = matches[1].replace(/"/g, '').trim();
+                        const shift = matches[2].replace(/"/g, '').trim();
+                        const date = matches[3].replace(/"/g, '').trim();
+                        const time = matches[4].replace(/"/g, '').trim();
+
+                        // Check for duplicate record
+                        const isDuplicate = attendanceLogs.some(l => 
+                            l.name === name && l.date === date && l.time === time && l.shift === shift
+                        );
+
+                        if (!isDuplicate) {
+                            attendanceLogs.push({
+                                id: Date.now() + Math.random(),
+                                name,
+                                dayOfWeek,
+                                shift,
+                                date,
+                                time,
+                                signature: ""
+                            });
+                            addedCount++;
+                        }
+                    }
+                }
+
+                localStorage.setItem('motorway_logs', JSON.stringify(attendanceLogs));
+                renderAdminData();
+                alert(`Successfully imported and appended ${addedCount} new records!`);
+                e.target.value = ''; // Reset file input
+            };
+            reader.readAsText(file);
+        }
+
+        // Clear Local Logs
+        function clearAllLogs() {
+            if (confirm("Are you sure you want to clear all archived records? Make sure you have exported your Master CSV first!")) {
+                let doubleCheck = prompt("Type 'DELETE' to confirm clearing all data:");
+                if (doubleCheck === "DELETE") {
+                    attendanceLogs = [];
+                    localStorage.setItem('motorway_logs', JSON.stringify(attendanceLogs));
+                    renderAdminData();
+                    alert("Log archive cleared.");
+                }
+            }
+        }
+    </script>
+</body>
+</html>
