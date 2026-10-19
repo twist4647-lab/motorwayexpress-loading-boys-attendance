@@ -10,27 +10,35 @@
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
     
     <style>
-        /* Slow-motion glowing & shimmer pulse animation */
-        @keyframes slowShimmerPulse {
+        /* Slow-motion glowing pulse specifically for Hisense */
+        @keyframes hisenseGlow {
             0% {
-                opacity: 0.3;
-                transform: scale(0.96);
-                filter: drop-shadow(0 0 0px rgba(59, 130, 246, 0));
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.4), 0 0 10px rgba(59, 130, 246, 0.3);
+                transform: scale(0.97);
             }
             50% {
-                opacity: 1;
-                transform: scale(1.02);
-                filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.6));
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(59, 130, 246, 0.8), 0 0 60px rgba(37, 99, 235, 0.6);
+                transform: scale(1.03);
             }
             100% {
-                opacity: 0.3;
-                transform: scale(0.96);
-                filter: drop-shadow(0 0 0px rgba(59, 130, 246, 0));
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.4), 0 0 10px rgba(59, 130, 246, 0.3);
+                transform: scale(0.97);
             }
         }
 
-        .animate-slow-shimmer {
-            animation: slowShimmerPulse 2.8s ease-in-out infinite;
+        .animate-hisense-glow {
+            animation: hisenseGlow 3s ease-in-out infinite;
+        }
+
+        /* Subtle fade and pulse for the subtitle & truck */
+        @keyframes subPulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        .animate-sub-pulse {
+            animation: subPulse 3s ease-in-out infinite;
         }
     </style>
 </head>
@@ -40,19 +48,29 @@
     <div id="splashScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-opacity duration-1000">
         <!-- Background Image & Gradient Overlay -->
         <div class="absolute inset-0 z-0">
-            <img src="image_f69660.jpg" alt="Hisense Showroom" class="w-full h-full object-cover opacity-45">
-            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/50"></div>
+            <img src="image_f69660.jpg" alt="Hisense Showroom" class="w-full h-full object-cover opacity-50">
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/40"></div>
         </div>
 
-        <!-- Centered Glowing Branding -->
-        <div class="relative z-10 text-center px-6 animate-slow-shimmer select-none">
-            <h1 class="text-4xl md:text-6xl font-black text-white tracking-tight leading-tight drop-shadow-xl">
+        <!-- Centered Branding Content -->
+        <div class="relative z-10 text-center px-6 select-none flex flex-col items-center">
+            <!-- Glowing Hisense Title -->
+            <h1 class="text-5xl md:text-7xl font-black text-white tracking-tight leading-tight animate-hisense-glow">
                 Hisense
             </h1>
-            <div class="h-1.5 w-32 bg-blue-500 mx-auto my-3 rounded-full shadow-lg"></div>
-            <p class="text-xl md:text-3xl font-extrabold text-blue-400 tracking-wider uppercase drop-shadow-lg">
-                Motorway Express Warehouse
-            </p>
+            <div class="h-1.5 w-36 bg-blue-500 mx-auto my-4 rounded-full shadow-lg"></div>
+            
+            <!-- Warehouse Subtitle with Truck Icon -->
+            <div class="flex items-center justify-center gap-3 animate-sub-pulse flex-wrap">
+                <p class="text-xl md:text-3xl font-extrabold text-blue-400 tracking-wider uppercase drop-shadow-lg">
+                    Motorway Express Warehouse
+                </p>
+                <!-- Delivery Truck SVG Icon -->
+                <svg class="w-8 h-8 md:w-10 md:h-10 text-blue-400 drop-shadow-lg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m10 0a2 2 0 104 0"></path>
+                </svg>
+            </div>
         </div>
         
         <!-- Loading Progress Indicator -->
@@ -169,88 +187,4 @@
             <div class="bg-white border rounded-xl p-4 shadow-sm">
                 <h3 class="font-bold text-gray-800 mb-3">Manage Staff Roster</h3>
                 <div class="flex gap-2 mb-4">
-                    <input type="text" id="newStaffInput" placeholder="Enter new staff name..." class="flex-1 border p-2 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
-                    <button onclick="addStaff()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg">Add Name</button>
-                </div>
-                <div class="max-h-48 overflow-y-auto border rounded-lg">
-                    <table class="w-full text-left text-sm">
-                        <tbody id="adminStaffTable"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Summary Card -->
-            <div class="bg-white border rounded-xl p-4 shadow-sm">
-                <h3 class="font-bold text-gray-800 mb-3">Days Present & Shift Summary</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead>
-                            <tr class="bg-gray-100 border-b">
-                                <th class="p-2">Name</th>
-                                <th class="p-2">Day Shifts</th>
-                                <th class="p-2">Night Shifts</th>
-                                <th class="p-2">Unique Days Present</th>
-                                <th class="p-2">Total Check-Ins</th>
-                            </tr>
-                        </thead>
-                        <tbody id="summaryTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Detailed Logs Card -->
-            <div class="bg-white border rounded-xl p-4 shadow-sm">
-                <div class="flex justify-between items-center mb-3">
-                    <h3 class="font-bold text-gray-800">All Check-In Logs (<span id="totalLogsCount">0</span>)</h3>
-                </div>
-                <div class="overflow-x-auto max-h-64">
-                    <table class="w-full text-left text-sm">
-                        <thead>
-                            <tr class="bg-gray-100 border-b">
-                                <th class="p-2">Name</th>
-                                <th class="p-2">Day of Week</th>
-                                <th class="p-2">Shift</th>
-                                <th class="p-2">Date</th>
-                                <th class="p-2">Time</th>
-                                <th class="p-2">Signature</th>
-                            </tr>
-                        </thead>
-                        <tbody id="logsTableBody"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Automatic Splash Screen Transition Timer (3.5 seconds)
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                const splash = document.getElementById('splashScreen');
-                const main = document.getElementById('mainContainer');
-                
-                // Fade out splash screen
-                splash.style.opacity = '0';
-                
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                    // Fade in main app interface
-                    main.classList.remove('opacity-0');
-                    main.classList.add('opacity-100');
-                    // Initialize signature canvas after layout is visible
-                    initSignaturePad();
-                }, 1000);
-            }, 3500);
-        });
-
-        // Default Staff Array
-        const defaultStaff = [
-            "Patrick Apawudza",
-            "John Njoku",
-            "Ayirebi Wise",
-            "Godwin Horsu",
-            "Godwin Kyekye",
-            "Godfred OK"
-        ];
-
-        // Retrieve data
+                    <input type="text" id="newStaffInput"
