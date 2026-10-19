@@ -13,15 +13,15 @@
         /* Slow-motion glowing pulse specifically for Hisense */
         @keyframes hisenseGlow {
             0% {
-                text-shadow: 0 0 5px rgba(255, 255, 255, 0.4), 0 0 10px rgba(59, 130, 246, 0.3);
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 15px rgba(59, 130, 246, 0.4);
                 transform: scale(0.97);
             }
             50% {
-                text-shadow: 0 0 20px rgba(255, 255, 255, 0.9), 0 0 40px rgba(59, 130, 246, 0.8), 0 0 60px rgba(37, 99, 235, 0.6);
+                text-shadow: 0 0 25px rgba(255, 255, 255, 1), 0 0 45px rgba(59, 130, 246, 0.9), 0 0 70px rgba(37, 99, 235, 0.8);
                 transform: scale(1.03);
             }
             100% {
-                text-shadow: 0 0 5px rgba(255, 255, 255, 0.4), 0 0 10px rgba(59, 130, 246, 0.3);
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 15px rgba(59, 130, 246, 0.4);
                 transform: scale(0.97);
             }
         }
@@ -30,29 +30,42 @@
             animation: hisenseGlow 3s ease-in-out infinite;
         }
 
-        /* Fast-moving truck sliding across the screen */
-        @keyframes driveFast {
+        /* Fast-moving truck sliding animation across screen */
+        @keyframes driveFastAnimation {
             0% {
-                transform: translateX(-120vw);
+                left: -20%;
             }
             100% {
-                transform: translateX(120vw);
+                left: 110%;
             }
         }
 
-        .animate-drive-fast {
-            animation: driveFast 1.4s linear infinite;
+        .truck-track {
+            position: absolute;
+            bottom: 5rem;
+            left: 0;
+            width: 100%;
+            height: 4rem;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .fast-truck {
+            position: absolute;
+            top: 0;
+            left: -20%;
+            animation: driveFastAnimation 1.2s linear infinite;
         }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen p-4 md:p-8">
 
-    <!-- INTRO SPLASH SCREEN WITH SHOWROOM BACKGROUND -->
+    <!-- INTRO SPLASH SCREEN WITH LIGHTER SHOWROOM BACKGROUND -->
     <div id="splashScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-opacity duration-1000 overflow-hidden">
-        <!-- Background Image & Gradient Overlay -->
+        <!-- Background Image & Lighter Overlay (Increased visibility from 50% to 75%) -->
         <div class="absolute inset-0 z-0">
-            <img src="image_f69660.jpg" alt="Hisense Showroom" class="w-full h-full object-cover opacity-50">
-            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/40"></div>
+            <img src="image_f69660.jpg" alt="Hisense Showroom" class="w-full h-full object-cover opacity-75">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20"></div>
         </div>
 
         <!-- Centered Branding Content -->
@@ -64,15 +77,15 @@
             <div class="h-1.5 w-36 bg-blue-500 mx-auto my-4 rounded-full shadow-lg"></div>
             
             <!-- Warehouse Subtitle -->
-            <p class="text-xl md:text-3xl font-extrabold text-blue-400 tracking-wider uppercase drop-shadow-lg">
+            <p class="text-xl md:text-3xl font-extrabold text-blue-300 tracking-wider uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                 Motorway Express Warehouse
             </p>
         </div>
 
         <!-- Fast Moving Truck Track -->
-        <div class="absolute w-full overflow-hidden h-20 bottom-28 z-10">
-            <div class="absolute animate-drive-fast flex items-center">
-                <svg class="w-16 h-16 md:w-20 md:h-20 text-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.8)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <div class="truck-track z-20">
+            <div class="fast-truck">
+                <svg class="w-16 h-16 md:w-20 md:h-20 text-blue-300 drop-shadow-[0_0_12px_rgba(59,130,246,0.9)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path>
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m10 0a2 2 0 104 0"></path>
                 </svg>
@@ -80,10 +93,10 @@
         </div>
         
         <!-- Loading Progress Indicator -->
-        <div class="absolute bottom-10 z-10 flex flex-col items-center gap-2">
-            <span class="text-xs uppercase tracking-widest text-gray-300 font-semibold">Initializing System...</span>
-            <div class="w-36 h-1 bg-gray-700 rounded-full overflow-hidden">
-                <div class="w-full h-full bg-blue-500 animate-pulse"></div>
+        <div class="absolute bottom-6 z-10 flex flex-col items-center gap-2">
+            <span class="text-xs uppercase tracking-widest text-gray-200 font-semibold drop-shadow">Initializing System...</span>
+            <div class="w-36 h-1 bg-gray-700/80 rounded-full overflow-hidden">
+                <div class="w-full h-full bg-blue-400 animate-pulse"></div>
             </div>
         </div>
     </div>
