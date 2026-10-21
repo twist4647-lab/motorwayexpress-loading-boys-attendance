@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -62,7 +63,7 @@
 
     <!-- INTRO SPLASH SCREEN WITH LIGHTER SHOWROOM BACKGROUND -->
     <div id="splashScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-opacity duration-1000 overflow-hidden">
-        <!-- Background Image & Lighter Overlay (Increased visibility from 50% to 75%) -->
+        <!-- Background Image & Lighter Overlay -->
         <div class="absolute inset-0 z-0">
             <img src="image_f69660.jpg" alt="Hisense Showroom" class="w-full h-full object-cover opacity-75">
             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20"></div>
@@ -168,7 +169,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow transition">
+                <button type="submit" id="submitBtn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow transition">
                     Submit Check-In
                 </button>
             </form>
@@ -260,6 +261,10 @@
     </div>
 
     <script>
+        // GOOGLE APPS SCRIPT ENDPOINT URL
+        // Replace this string with your published Apps Script Web App URL!
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/u/0/home/projects/1IMQTYMytCYGGlw1Bl2vYGXeHx43A3rn9xiYbxjgJKAhj-xsk3PZskGyp/edit';
+
         // Automatic Splash Screen Transition Timer (3 seconds)
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
@@ -440,8 +445,8 @@
             }
         }
 
-        // Handle Form Submission
-        function handleCheckIn(e) {
+        // Handle Form Submission (Saves Locally & Sends to Google Sheet)
+        async function handleCheckIn(e) {
             e.preventDefault();
             const name = document.getElementById('staffSelect').value;
             const shift = document.getElementById('shiftSelect').value;
@@ -465,20 +470,37 @@
             const now = new Date();
             const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-            // Add new log to the top of accumulated logs
-            attendanceLogs.unshift({
-                id: Date.now(),
+            const payload = {
                 name: name,
                 dayOfWeek: dayOfWeek,
                 shift: shift,
                 date: date,
                 time: time,
                 signature: sigDataUrl
-            });
+            };
 
+            // 1. Add new log to LocalStorage archive
+            attendanceLogs.unshift({
+                id: Date.now(),
+                ...payload
+            });
             localStorage.setItem('motorway_logs', JSON.stringify(attendanceLogs));
 
-            // Reset form
+            // 2. Send data directly to Google Sheet
+            if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'https://script.google.com/u/0/home/projects/1IMQTYMytCYGGlw1Bl2vYGXeHx43A3rn9xiYbxjgJKAhj-xsk3PZskGyp/edit') {
+                try {
+                    fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                } catch (err) {
+                    console.error("Error posting to Google Sheet:", err);
+                }
+            }
+
+            // Reset form UI
             document.getElementById('checkinForm').reset();
             document.getElementById('attendanceDate').valueAsDate = new Date();
             updateSelectedDayDisplay();
@@ -584,7 +606,7 @@
             }).join('') || `<tr><td colspan="6" class="p-2 text-gray-500 text-center">No attendance records yet.</td></tr>`;
         }
 
-        // CSV Exporter (Exports accumulated dataset)
+        // CSV Exporter
         function exportToCSV() {
             if (attendanceLogs.length === 0) {
                 alert("No records to export.");
@@ -604,7 +626,7 @@
             link.click();
         }
 
-        // CSV Importer (Appends external records into existing archive)
+        // CSV Importer
         function importCSV(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -619,7 +641,6 @@
                     const line = lines[i].trim();
                     if (!line) continue;
 
-                    // Parse quoted CSV fields
                     const matches = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
                     if (matches && matches.length >= 5) {
                         const name = matches[0].replace(/"/g, '').trim();
@@ -628,7 +649,6 @@
                         const date = matches[3].replace(/"/g, '').trim();
                         const time = matches[4].replace(/"/g, '').trim();
 
-                        // Check for duplicate record
                         const isDuplicate = attendanceLogs.some(l => 
                             l.name === name && l.date === date && l.time === time && l.shift === shift
                         );
@@ -651,7 +671,7 @@
                 localStorage.setItem('motorway_logs', JSON.stringify(attendanceLogs));
                 renderAdminData();
                 alert(`Successfully imported and appended ${addedCount} new records!`);
-                e.target.value = ''; // Reset file input
+                e.target.value = '';
             };
             reader.readAsText(file);
         }
