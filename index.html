@@ -262,8 +262,7 @@
 
     <script>
         // GOOGLE APPS SCRIPT ENDPOINT URL
-        // Replace this string with your published Apps Script Web App URL!
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/u/0/home/projects/1IMQTYMytCYGGlw1Bl2vYGXeHx43A3rn9xiYbxjgJKAhj-xsk3PZskGyp/edit';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzmnrDrAtL_tsXyiCX2TrevYT6df6sFP2edmusorgwle3E6xTHDPemaFTAUW5bLQLbZ/exec';
 
         // Automatic Splash Screen Transition Timer (3 seconds)
         window.addEventListener('DOMContentLoaded', () => {
@@ -487,7 +486,7 @@
             localStorage.setItem('motorway_logs', JSON.stringify(attendanceLogs));
 
             // 2. Send data directly to Google Sheet
-            if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== 'https://script.google.com/u/0/home/projects/1IMQTYMytCYGGlw1Bl2vYGXeHx43A3rn9xiYbxjgJKAhj-xsk3PZskGyp/edit') {
+            if (GOOGLE_SCRIPT_URL) {
                 try {
                     fetch(GOOGLE_SCRIPT_URL, {
                         method: 'POST',
