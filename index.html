@@ -16,8 +16,8 @@
                             blue: '#0071E3',
                             blueHover: '#0077ED',
                             grayBg: '#F5F5F7',
-                            cardLight: 'rgba(255, 255, 255, 0.82)',
-                            cardDark: 'rgba(28, 28, 30, 0.82)',
+                            cardLight: 'rgba(255, 255, 255, 0.85)',
+                            cardDark: 'rgba(28, 28, 30, 0.85)',
                             darkBg: '#000000',
                             borderLight: 'rgba(0, 0, 0, 0.08)',
                             borderDark: 'rgba(255, 255, 255, 0.12)'
@@ -76,6 +76,15 @@
             left: -20%;
             animation: driveFastAnimation 1.2s linear infinite;
         }
+
+        /* Success Scale Animation */
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop-in {
+            animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
     </style>
 </head>
 <body class="bg-apple-grayBg dark:bg-apple-darkBg text-slate-900 dark:text-slate-100 min-h-screen p-4 md:p-8 font-sans antialiased transition-colors duration-500">
@@ -120,8 +129,21 @@
     </div>
 
     <!-- MAIN APP CONTAINER (Apple Frosted Glass Style) -->
-    <div id="mainContainer" class="max-w-4xl mx-auto bg-apple-cardLight dark:bg-apple-cardDark backdrop-blur-2xl border border-apple-borderLight dark:border-apple-borderDark rounded-[28px] shadow-[0_20px_50px_rgba(0,0,0,0.08)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] p-6 md:p-8 opacity-0 transition-all duration-700">
+    <div id="mainContainer" class="relative max-w-4xl mx-auto bg-apple-cardLight dark:bg-apple-cardDark backdrop-blur-2xl border border-apple-borderLight dark:border-apple-borderDark rounded-[28px] shadow-[0_20px_50px_rgba(0,0,0,0.08)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] p-6 md:p-8 opacity-0 transition-all duration-700 overflow-hidden">
         
+        <!-- SUCCESS CONFIRMATION OVERLAY -->
+        <div id="successOverlay" class="hidden absolute inset-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center transition-all duration-300">
+            <div class="animate-pop-in flex flex-col items-center">
+                <div class="w-20 h-20 bg-emerald-100 dark:bg-emerald-950/80 border-2 border-emerald-500 rounded-full flex items-center justify-center text-emerald-500 shadow-xl mb-4">
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight mb-1">Check-In Complete</h3>
+                <p id="successOverlayMsg" class="text-sm font-semibold text-slate-600 dark:text-slate-300 max-w-sm"></p>
+            </div>
+        </div>
+
         <!-- Header & Navigation Switcher -->
         <div class="flex flex-col md:flex-row justify-between items-center border-b border-gray-200/60 dark:border-gray-800/80 pb-5 mb-6 gap-4">
             <div>
@@ -129,22 +151,22 @@
                 <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-0.5">Hisense Warehouse • Casual Staff Attendance</p>
             </div>
 
-            <!-- Header Action Controls with Native iOS Switch -->
-            <div class="flex items-center gap-3 flex-wrap">
-                <input type="date" id="attendanceDate" onchange="updateSelectedDayDisplay()" class="bg-slate-200/50 dark:bg-slate-800/80 border border-slate-300/50 dark:border-slate-700 px-3.5 py-2 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-apple-blue transition-all">
+            <!-- Header Controls with Apple Segmented Switcher & iOS Toggle -->
+            <div class="flex items-center gap-3 flex-wrap justify-center">
+                <input type="date" id="attendanceDate" onchange="updateSelectedDayDisplay()" class="bg-slate-200/60 dark:bg-slate-800/80 border border-slate-300/50 dark:border-slate-700 px-3 py-1.5 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-apple-blue transition-all">
                 
-                <button onclick="switchView('checkin')" id="navCheckin" class="px-4 py-2 text-xs font-bold rounded-2xl bg-apple-blue text-white shadow-sm active:scale-95 transition-all">Check-In</button>
-                <button onclick="checkAdminAccess()" id="navAdmin" class="px-4 py-2 text-xs font-bold rounded-2xl bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition-all">Admin</button>
+                <!-- Native Apple Segmented Control Bar -->
+                <div class="bg-slate-200/70 dark:bg-slate-800/90 p-1 rounded-2xl flex items-center shadow-inner border border-slate-300/40 dark:border-slate-700/50">
+                    <button onclick="switchView('checkin')" id="navCheckin" class="px-4 py-1.5 text-xs font-bold rounded-xl bg-white dark:bg-apple-blue text-slate-900 dark:text-white shadow-sm transition-all duration-200 active:scale-95">Check-In</button>
+                    <button onclick="checkAdminAccess()" id="navAdmin" class="px-4 py-1.5 text-xs font-bold rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200 active:scale-95">Admin</button>
+                </div>
                 
                 <!-- Authentic iOS Pill Toggle Switch -->
                 <div class="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-800">
                     <button onclick="toggleDarkMode()" class="relative inline-flex h-7 w-12 items-center rounded-full bg-slate-300 dark:bg-apple-blue transition-colors duration-300 focus:outline-none shadow-inner" id="iosToggleBtn">
                         <span class="sr-only">Toggle Dark Mode</span>
-                        <!-- Sliding Knob -->
                         <span id="iosToggleKnob" class="inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform duration-300 ease-out translate-x-1 dark:translate-x-6 flex items-center justify-center">
-                            <!-- Sun Icon -->
                             <svg id="sunIcon" class="w-3 h-3 text-amber-500 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clip-rule="evenodd"></path></svg>
-                            <!-- Moon Icon -->
                             <svg id="moonIcon" class="w-3 h-3 text-apple-blue hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
                         </span>
                     </button>
@@ -359,7 +381,6 @@
 
         let signaturePad = null;
 
-        // Set default date picker value to today
         document.getElementById('attendanceDate').valueAsDate = new Date();
 
         function getDayOfWeekName(dateString) {
@@ -386,7 +407,6 @@
             document.getElementById('liveDate').textContent = formattedDateStr;
         }
 
-        // Live Clock Loop
         function updateClock() {
             const now = new Date();
             document.getElementById('liveClock').textContent = now.toLocaleTimeString();
@@ -395,7 +415,6 @@
         updateClock();
         updateSelectedDayDisplay();
 
-        // Initialize Signature Pad Canvas with Dynamic Theme Ink Color
         function initSignaturePad() {
             const canvas = document.getElementById('pad');
             const ratio = window.devicePixelRatio || 1;
@@ -431,18 +450,22 @@
         }
         populateDropdown();
 
+        // View Switcher with Apple Segmented Control Styling
         function switchView(view) {
+            const btnCheckin = document.getElementById('navCheckin');
+            const btnAdmin = document.getElementById('navAdmin');
+
             if (view === 'checkin') {
                 document.getElementById('checkinView').classList.remove('hidden');
                 document.getElementById('adminView').classList.add('hidden');
-                document.getElementById('navCheckin').className = "px-4 py-2 text-xs font-bold rounded-2xl bg-apple-blue text-white shadow-sm active:scale-95 transition-all";
-                document.getElementById('navAdmin').className = "px-4 py-2 text-xs font-bold rounded-2xl bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition-all";
+                btnCheckin.className = "px-4 py-1.5 text-xs font-bold rounded-xl bg-white dark:bg-apple-blue text-slate-900 dark:text-white shadow-sm transition-all duration-200 active:scale-95";
+                btnAdmin.className = "px-4 py-1.5 text-xs font-bold rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200 active:scale-95";
                 setTimeout(initSignaturePad, 50);
             } else {
                 document.getElementById('checkinView').classList.add('hidden');
                 document.getElementById('adminView').classList.remove('hidden');
-                document.getElementById('navAdmin').className = "px-4 py-2 text-xs font-bold rounded-2xl bg-apple-blue text-white shadow-sm active:scale-95 transition-all";
-                document.getElementById('navCheckin').className = "px-4 py-2 text-xs font-bold rounded-2xl bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition-all";
+                btnAdmin.className = "px-4 py-1.5 text-xs font-bold rounded-xl bg-white dark:bg-apple-blue text-slate-900 dark:text-white shadow-sm transition-all duration-200 active:scale-95";
+                btnCheckin.className = "px-4 py-1.5 text-xs font-bold rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200 active:scale-95";
                 renderAdminData();
             }
         }
@@ -528,12 +551,19 @@
 
             localStorage.setItem('motorway_logs', JSON.stringify(attendanceLogs));
 
-            document.getElementById('checkinForm').reset();
-            document.getElementById('attendanceDate').valueAsDate = new Date();
-            updateSelectedDayDisplay();
-            signaturePad.clear();
+            // Trigger Visual Success Pop-in Overlay
+            const overlay = document.getElementById('successOverlay');
+            const overlayMsg = document.getElementById('successOverlayMsg');
+            overlayMsg.textContent = `${name} • Checked in for ${dayOfWeek} (${shift} Shift)`;
+            overlay.classList.remove('hidden');
 
-            showAlert(`Thank you, ${name}. Checked in for ${dayOfWeek} (${shift} Shift)!`, "ok");
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                document.getElementById('checkinForm').reset();
+                document.getElementById('attendanceDate').valueAsDate = new Date();
+                updateSelectedDayDisplay();
+                signaturePad.clear();
+            }, 1800);
         }
 
         function showAlert(msg, type) {
@@ -571,6 +601,7 @@
         }
 
         function renderAdminData() {
+            // Roster Table Empty State
             const staffTbody = document.getElementById('adminStaffTable');
             staffTbody.innerHTML = staffList.map(s => `
                 <tr class="border-b border-slate-200/50 dark:border-slate-700/50">
@@ -579,7 +610,13 @@
                         <button onclick="removeStaff('${s}')" class="px-2.5 py-1 bg-rose-100 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 rounded-lg text-xs font-bold hover:bg-rose-200 active:scale-95 transition-all">Remove</button>
                     </td>
                 </tr>
-            `).join('') || `<tr><td class="p-2.5 text-slate-500">No staff found.</td></tr>`;
+            `).join('') || `
+                <tr>
+                    <td colspan="2" class="p-6 text-center text-slate-400 dark:text-slate-500">
+                        <svg class="w-8 h-8 mx-auto mb-1.5 opacity-60" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        <p class="text-xs font-medium">No staff members in roster.</p>
+                    </td>
+                </tr>`;
 
             let stats = {};
             staffList.forEach(s => stats[s] = { dayShifts: 0, nightShifts: 0, uniqueDays: new Set(), total: 0 });
@@ -605,10 +642,11 @@
 
             document.getElementById('totalLogsCount').textContent = attendanceLogs.length;
 
+            // Logs Table Empty State
             const logsTbody = document.getElementById('logsTableBody');
             logsTbody.innerHTML = attendanceLogs.map(r => {
                 const dayName = r.dayOfWeek || getDayOfWeekName(r.date);
-                const sigDisplay = r.signature ? `<img src="${r.signature}" class="h-8 border bg-white rounded-lg p-0.5" alt="Sig">` : '<span class="text-xs text-slate-400">Imported</span>';
+                const sigDisplay = r.signature ? `<img src="${r.signature}" class="h-8 border bg-white rounded-lg p-0.5 shadow-sm" alt="Sig">` : '<span class="text-xs text-slate-400">Imported</span>';
                 return `
                     <tr class="border-b border-slate-200/50 dark:border-slate-700/50 text-slate-800 dark:text-slate-200">
                         <td class="p-2.5 font-medium">${r.name}</td>
@@ -623,7 +661,13 @@
                         <td class="p-2.5">${sigDisplay}</td>
                     </tr>
                 `;
-            }).join('') || `<tr><td colspan="6" class="p-2.5 text-slate-500 text-center">No attendance records yet.</td></tr>`;
+            }).join('') || `
+                <tr>
+                    <td colspan="6" class="p-8 text-center text-slate-400 dark:text-slate-500">
+                        <svg class="w-8 h-8 mx-auto mb-1.5 opacity-60" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <p class="text-xs font-medium">No check-in logs recorded yet.</p>
+                    </td>
+                </tr>`;
         }
 
         function exportToCSV() {
