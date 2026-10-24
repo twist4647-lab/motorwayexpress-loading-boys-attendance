@@ -1,12 +1,35 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hisense - Motorway Express Warehouse Attendance</title>
     <!-- Tailwind CSS for Styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        apple: {
+                            blue: '#0071E3',
+                            blueHover: '#0077ED',
+                            grayBg: '#F5F5F7',
+                            cardLight: 'rgba(255, 255, 255, 0.85)',
+                            cardDark: 'rgba(28, 28, 30, 0.85)',
+                            darkBg: '#000000',
+                            borderLight: 'rgba(0, 0, 0, 0.08)',
+                            borderDark: 'rgba(255, 255, 255, 0.12)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
     <!-- Signature Pad Library -->
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
     
@@ -15,15 +38,15 @@
         @keyframes hisenseGlow {
             0% {
                 text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 15px rgba(59, 130, 246, 0.4);
-                transform: scale(0.97);
+                transform: scale(0.98);
             }
             50% {
                 text-shadow: 0 0 25px rgba(255, 255, 255, 1), 0 0 45px rgba(59, 130, 246, 0.9), 0 0 70px rgba(37, 99, 235, 0.8);
-                transform: scale(1.03);
+                transform: scale(1.02);
             }
             100% {
                 text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 15px rgba(59, 130, 246, 0.4);
-                transform: scale(0.97);
+                transform: scale(0.98);
             }
         }
 
@@ -33,12 +56,8 @@
 
         /* Fast-moving truck sliding animation across screen */
         @keyframes driveFastAnimation {
-            0% {
-                left: -20%;
-            }
-            100% {
-                left: 110%;
-            }
+            0% { left: -20%; }
+            100% { left: 110%; }
         }
 
         .truck-track {
@@ -59,11 +78,11 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen p-4 md:p-8">
+<body class="bg-apple-grayBg dark:bg-apple-darkBg text-slate-900 dark:text-slate-100 min-h-screen p-4 md:p-8 font-sans antialiased transition-colors duration-500">
 
-    <!-- INTRO SPLASH SCREEN WITH LIGHTER SHOWROOM BACKGROUND -->
+    <!-- INTRO SPLASH SCREEN WITH SHOWROOM BACKGROUND -->
     <div id="splashScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-opacity duration-1000 overflow-hidden">
-        <!-- Background Image & Lighter Overlay -->
+        <!-- Background Image & Overlay -->
         <div class="absolute inset-0 z-0">
             <img src="image_f69660.jpg" alt="Hisense Showroom" class="w-full h-full object-cover opacity-75">
             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20"></div>
@@ -71,13 +90,11 @@
 
         <!-- Centered Branding Content -->
         <div class="relative z-10 text-center px-6 select-none flex flex-col items-center">
-            <!-- Glowing Hisense Title -->
             <h1 class="text-5xl md:text-7xl font-black text-white tracking-tight leading-tight animate-hisense-glow">
                 Hisense
             </h1>
             <div class="h-1.5 w-36 bg-blue-500 mx-auto my-4 rounded-full shadow-lg"></div>
             
-            <!-- Warehouse Subtitle -->
             <p class="text-xl md:text-3xl font-extrabold text-blue-300 tracking-wider uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                 Motorway Express Warehouse
             </p>
@@ -86,7 +103,7 @@
         <!-- Fast Moving Truck Track -->
         <div class="truck-track z-20">
             <div class="fast-truck">
-                <svg class="w-16 h-16 md:w-20 md:h-20 text-blue-300 drop-shadow-[0_0_12px_rgba(59,130,246,0.9)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-16 h-16 md:w-20 md:h-20 text-blue-300 drop-shadow-[0_0_12px_rgba(59,130,246,0.9)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"></path>
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m10 0a2 2 0 104 0"></path>
                 </svg>
@@ -102,74 +119,88 @@
         </div>
     </div>
 
-    <!-- MAIN APP CONTAINER -->
-    <div id="mainContainer" class="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-6 opacity-0 transition-opacity duration-700">
+    <!-- MAIN APP CONTAINER (Apple Frosted Glass Style) -->
+    <div id="mainContainer" class="max-w-4xl mx-auto bg-apple-cardLight dark:bg-apple-cardDark backdrop-blur-xl border border-apple-borderLight dark:border-apple-borderDark rounded-3xl shadow-2xl p-6 md:p-8 opacity-0 transition-all duration-700">
+        
         <!-- Header & Navigation Switcher -->
-        <div class="flex flex-col md:flex-row justify-between items-center border-b pb-4 mb-6 gap-4">
+        <div class="flex flex-col md:flex-row justify-between items-center border-b border-gray-200/50 dark:border-gray-800/80 pb-5 mb-6 gap-4">
             <div>
-                <h1 class="text-2xl font-bold text-gray-800">Motorway Express</h1>
-                <p class="text-sm text-gray-500">Hisense Warehouse - Casual Staff Attendance</p>
+                <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Motorway Express</h1>
+                <p class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">Hisense Warehouse • Casual Staff Attendance</p>
             </div>
+
+            <!-- Header Action Controls -->
             <div class="flex items-center gap-3">
-                <input type="date" id="attendanceDate" onchange="updateSelectedDayDisplay()" class="border p-2 rounded-lg text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <button onclick="switchView('checkin')" id="navCheckin" class="px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white shadow">Check-In</button>
-                <button onclick="checkAdminAccess()" id="navAdmin" class="px-4 py-2 text-sm font-semibold rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">Admin</button>
+                <input type="date" id="attendanceDate" onchange="updateSelectedDayDisplay()" class="bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-2xl text-sm font-semibold text-slate-800 dark:text-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-apple-blue">
+                
+                <button onclick="switchView('checkin')" id="navCheckin" class="px-4 py-2 text-xs font-bold rounded-2xl bg-apple-blue text-white shadow-md active:scale-95 transition-all">Check-In</button>
+                <button onclick="checkAdminAccess()" id="navAdmin" class="px-4 py-2 text-xs font-bold rounded-2xl bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition-all">Admin</button>
+                
+                <!-- iOS Style Dark Mode Toggle Switch -->
+                <button onclick="toggleDarkMode()" title="Toggle Dark/Light Mode" class="p-2 rounded-2xl bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-90 transition-all">
+                    <!-- Sun Icon -->
+                    <svg id="sunIcon" class="w-5 h-5 hidden dark:block text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <!-- Moon Icon -->
+                    <svg id="moonIcon" class="w-5 h-5 block dark:hidden text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                </button>
             </div>
         </div>
 
         <!-- VIEW 1: CHECK-IN PAGE -->
         <div id="checkinView">
-            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 flex justify-between items-center">
+            <!-- iOS Status Badge Banner -->
+            <div class="bg-blue-50/60 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-900/50 rounded-2xl p-4 mb-6 flex justify-between items-center backdrop-blur-md">
                 <div>
-                    <span class="text-xs uppercase font-bold text-blue-600 tracking-wider">Live Clock</span>
-                    <div id="liveClock" class="text-xl font-bold text-gray-800">--:--:--</div>
+                    <span class="text-[10px] uppercase font-bold text-apple-blue tracking-widest">Live Clock</span>
+                    <div id="liveClock" class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">--:--:--</div>
                 </div>
                 <div class="text-right">
-                    <span class="text-xs uppercase font-bold text-blue-600 tracking-wider">Selected Date</span>
-                    <div id="liveDate" class="text-sm font-semibold text-gray-800">-</div>
+                    <span class="text-[10px] uppercase font-bold text-apple-blue tracking-widest">Selected Date</span>
+                    <div id="liveDate" class="text-sm font-bold text-slate-800 dark:text-slate-200">-</div>
                 </div>
             </div>
 
             <div id="alertBox"></div>
 
-            <form id="checkinForm" onsubmit="handleCheckIn(event)" class="space-y-4">
+            <form id="checkinForm" onsubmit="handleCheckIn(event)" class="space-y-5">
                 <!-- Name Selection Dropdown -->
                 <div>
-                    <label class="block font-semibold text-gray-700 mb-2" for="staffSelect">Choose Your Name</label>
-                    <select id="staffSelect" required class="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500">
+                    <label class="block font-semibold text-sm text-slate-700 dark:text-slate-300 mb-2" for="staffSelect">Choose Your Name</label>
+                    <select id="staffSelect" required class="w-full p-3.5 border border-slate-200 dark:border-slate-700 rounded-2xl bg-white/90 dark:bg-slate-800/90 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-apple-blue focus:outline-none transition-all shadow-sm">
                         <option value="">-- Select your name --</option>
                     </select>
                 </div>
 
                 <!-- Shift Selection Field -->
                 <div>
-                    <label class="block font-semibold text-gray-700 mb-2" for="shiftSelect">Select Shift</label>
-                    <select id="shiftSelect" required class="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500">
+                    <label class="block font-semibold text-sm text-slate-700 dark:text-slate-300 mb-2" for="shiftSelect">Select Shift</label>
+                    <select id="shiftSelect" required class="w-full p-3.5 border border-slate-200 dark:border-slate-700 rounded-2xl bg-white/90 dark:bg-slate-800/90 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-apple-blue focus:outline-none transition-all shadow-sm">
                         <option value="">-- Select Shift --</option>
-                        <option value="DAY"> DAY </option>
-                        <option value="NIGHT"> NIGHT </option>
+                        <option value="DAY"> DAY SHIFT </option>
+                        <option value="NIGHT"> NIGHT SHIFT </option>
                     </select>
                 </div>
 
                 <!-- Automatic Day Indicator -->
-                <div class="bg-gray-50 p-3 rounded-lg border flex justify-between items-center">
-                    <span class="text-sm font-semibold text-gray-600">Check-In Day:</span>
-                    <span id="autoDayBadge" class="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-bold rounded-lg">-</span>
+                <div class="bg-slate-100/70 dark:bg-slate-800/70 p-3.5 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 flex justify-between items-center">
+                    <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Check-In Day</span>
+                    <span id="autoDayBadge" class="px-3.5 py-1 bg-blue-100 dark:bg-blue-900/60 text-apple-blue dark:text-blue-300 text-xs font-bold rounded-xl">-</span>
                 </div>
 
-                <!-- Signature Pad -->
+                <!-- Signature Pad Surface -->
                 <div>
-                    <label class="block font-semibold text-gray-700 mb-2">Signature</label>
-                    <div class="border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 p-2">
-                        <canvas id="pad" class="w-full h-40 touch-none"></canvas>
+                    <label class="block font-semibold text-sm text-slate-700 dark:text-slate-300 mb-2">Signature</label>
+                    <div class="border border-slate-300 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900/80 p-2 shadow-inner">
+                        <canvas id="pad" class="w-full h-40 touch-none rounded-xl"></canvas>
                     </div>
-                    <div class="flex justify-between items-center mt-2">
-                        <button type="button" onclick="clearPad()" class="px-3 py-1 text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg">Clear Signature</button>
+                    <div class="flex justify-between items-center mt-2.5">
+                        <button type="button" onclick="clearPad()" class="px-3 py-1.5 text-xs font-semibold bg-slate-200/80 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl transition-all active:scale-95">Clear Signature</button>
                         <span id="sigWarning" class="text-xs text-red-500 font-medium">Signature required</span>
                     </div>
                 </div>
 
-                <button type="submit" id="submitBtn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow transition">
+                <!-- Submit Button -->
+                <button type="submit" class="w-full py-3.5 bg-apple-blue hover:bg-apple-blueHover text-white font-bold text-base rounded-2xl shadow-lg active:scale-[0.98] transition-all">
                     Submit Check-In
                 </button>
             </form>
@@ -177,40 +208,32 @@
 
         <!-- VIEW 2: ADMIN PANEL -->
         <div id="adminView" class="hidden space-y-6">
-            <!-- Admin Actions -->
-            <div class="bg-gray-50 border p-4 rounded-xl flex flex-wrap justify-between items-center gap-4">
+            <!-- Admin Controls -->
+            <div class="bg-slate-100/70 dark:bg-slate-800/70 border border-slate-200/50 dark:border-slate-700/50 p-4 rounded-2xl flex flex-wrap justify-between items-center gap-4">
                 <div>
-                    <h3 class="font-bold text-gray-800">Admin Control Hub</h3>
-                    <p class="text-sm text-gray-500">Manage roster, inspect cumulative summaries, or export merged CSV logs.</p>
+                    <h3 class="font-bold text-slate-900 dark:text-white">Admin Control Hub</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Manage roster, inspect summaries, or export merged CSV logs.</p>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                    <label class="bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow cursor-pointer">
-                        Import Previous CSV
+                    <label class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow cursor-pointer active:scale-95 transition-all">
+                        Import CSV
                         <input type="file" id="csvFileInput" accept=".csv" class="hidden" onchange="importCSV(event)">
                     </label>
-                    <button onclick="changePinPrompt()" class="bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow">
-                        Change Admin PIN
-                    </button>
-                    <button onclick="exportToCSV()" class="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow">
-                        Download Master CSV
-                    </button>
-                    <button onclick="clearAllLogs()" class="bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow">
-                        Clear Logs Archive
-                    </button>
-                    <button onclick="switchView('checkin')" class="bg-gray-300 hover:bg-gray-400 text-gray-800 text-sm font-semibold px-4 py-2 rounded-lg">
-                        Close Admin
-                    </button>
+                    <button onclick="changePinPrompt()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow active:scale-95 transition-all">Change PIN</button>
+                    <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow active:scale-95 transition-all">Export CSV</button>
+                    <button onclick="clearAllLogs()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow active:scale-95 transition-all">Clear Logs</button>
+                    <button onclick="switchView('checkin')" class="bg-slate-300 dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold px-3.5 py-2 rounded-xl active:scale-95 transition-all">Close</button>
                 </div>
             </div>
 
             <!-- Staff Management Card -->
-            <div class="bg-white border rounded-xl p-4 shadow-sm">
-                <h3 class="font-bold text-gray-800 mb-3">Manage Staff Roster</h3>
+            <div class="bg-white/80 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-4 shadow-sm">
+                <h3 class="font-bold text-slate-900 dark:text-white mb-3 text-sm">Manage Staff Roster</h3>
                 <div class="flex gap-2 mb-4">
-                    <input type="text" id="newStaffInput" placeholder="Enter new staff name..." class="flex-1 border p-2 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
-                    <button onclick="addStaff()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg">Add Name</button>
+                    <input type="text" id="newStaffInput" placeholder="Enter new staff name..." class="flex-1 border border-slate-200 dark:border-slate-700 p-2.5 rounded-xl text-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:ring-2 focus:ring-apple-blue focus:outline-none">
+                    <button onclick="addStaff()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl active:scale-95 transition-all">Add Name</button>
                 </div>
-                <div class="max-h-48 overflow-y-auto border rounded-lg">
+                <div class="max-h-48 overflow-y-auto border border-slate-200 dark:border-slate-700 rounded-xl">
                     <table class="w-full text-left text-sm">
                         <tbody id="adminStaffTable"></tbody>
                     </table>
@@ -218,17 +241,17 @@
             </div>
 
             <!-- Summary Card -->
-            <div class="bg-white border rounded-xl p-4 shadow-sm">
-                <h3 class="font-bold text-gray-800 mb-3">Days Present & Shift Summary</h3>
+            <div class="bg-white/80 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-4 shadow-sm">
+                <h3 class="font-bold text-slate-900 dark:text-white mb-3 text-sm">Days Present & Shift Summary</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm">
                         <thead>
-                            <tr class="bg-gray-100 border-b">
-                                <th class="p-2">Name</th>
-                                <th class="p-2">Day Shifts</th>
-                                <th class="p-2">Night Shifts</th>
-                                <th class="p-2">Unique Days Present</th>
-                                <th class="p-2">Total Check-Ins</th>
+                            <tr class="bg-slate-100 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700">
+                                <th class="p-2.5 text-xs font-semibold">Name</th>
+                                <th class="p-2.5 text-xs font-semibold">Day Shifts</th>
+                                <th class="p-2.5 text-xs font-semibold">Night Shifts</th>
+                                <th class="p-2.5 text-xs font-semibold">Unique Days</th>
+                                <th class="p-2.5 text-xs font-semibold">Total</th>
                             </tr>
                         </thead>
                         <tbody id="summaryTableBody"></tbody>
@@ -237,20 +260,20 @@
             </div>
 
             <!-- Detailed Logs Card -->
-            <div class="bg-white border rounded-xl p-4 shadow-sm">
+            <div class="bg-white/80 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-4 shadow-sm">
                 <div class="flex justify-between items-center mb-3">
-                    <h3 class="font-bold text-gray-800">All Check-In Logs (<span id="totalLogsCount">0</span>)</h3>
+                    <h3 class="font-bold text-slate-900 dark:text-white text-sm">All Check-In Logs (<span id="totalLogsCount">0</span>)</h3>
                 </div>
                 <div class="overflow-x-auto max-h-64">
                     <table class="w-full text-left text-sm">
                         <thead>
-                            <tr class="bg-gray-100 border-b">
-                                <th class="p-2">Name</th>
-                                <th class="p-2">Day of Week</th>
-                                <th class="p-2">Shift</th>
-                                <th class="p-2">Date</th>
-                                <th class="p-2">Time</th>
-                                <th class="p-2">Signature</th>
+                            <tr class="bg-slate-100 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700">
+                                <th class="p-2.5 text-xs font-semibold">Name</th>
+                                <th class="p-2.5 text-xs font-semibold">Day</th>
+                                <th class="p-2.5 text-xs font-semibold">Shift</th>
+                                <th class="p-2.5 text-xs font-semibold">Date</th>
+                                <th class="p-2.5 text-xs font-semibold">Time</th>
+                                <th class="p-2.5 text-xs font-semibold">Signature</th>
                             </tr>
                         </thead>
                         <tbody id="logsTableBody"></tbody>
@@ -261,8 +284,33 @@
     </div>
 
     <script>
-        // GOOGLE APPS SCRIPT ENDPOINT URL
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3Pp0Xt86HLEZlbsmf6kvjpY6ADblqqFZ9e8CBHx6izh0R49wSGQVaFv6V8vpnnBxd/exec';
+        // DARK MODE TOGGLE SYSTEM WITH LOCAL STORAGE MEMORY
+        function initTheme() {
+            const savedTheme = localStorage.getItem('motorway_theme');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
+            }
+        }
+
+        function toggleDarkMode() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
+                localStorage.setItem('motorway_theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                document.documentElement.classList.remove('light');
+                localStorage.setItem('motorway_theme', 'dark');
+            }
+            if (signaturePad) {
+                initSignaturePad();
+            }
+        }
+        initTheme();
 
         // Automatic Splash Screen Transition Timer (3 seconds)
         window.addEventListener('DOMContentLoaded', () => {
@@ -270,15 +318,12 @@
                 const splash = document.getElementById('splashScreen');
                 const main = document.getElementById('mainContainer');
                 
-                // Fade out splash screen
                 splash.style.opacity = '0';
                 
                 setTimeout(() => {
                     splash.style.display = 'none';
-                    // Fade in main app interface
                     main.classList.remove('opacity-0');
                     main.classList.add('opacity-100');
-                    // Initialize signature canvas after layout is visible
                     initSignaturePad();
                 }, 1000);
             }, 3000);
@@ -294,7 +339,6 @@
             "Godfred OK"
         ];
 
-        // Retrieve data from localStorage or fallback to defaults
         let staffList = JSON.parse(localStorage.getItem('motorway_staff'));
         if (!staffList || staffList.length === 0) {
             staffList = defaultStaff;
@@ -312,7 +356,6 @@
         // Set default date picker value to today
         document.getElementById('attendanceDate').valueAsDate = new Date();
 
-        // Helper function to extract Day Name from Date String
         function getDayOfWeekName(dateString) {
             if (!dateString) return '';
             const parts = dateString.split('-');
@@ -323,7 +366,6 @@
             return new Date(dateString).toLocaleDateString(undefined, { weekday: 'long' });
         }
 
-        // Update day indicator and date header whenever date input changes
         function updateSelectedDayDisplay() {
             const dateVal = document.getElementById('attendanceDate').value;
             const dayName = getDayOfWeekName(dateVal);
@@ -347,7 +389,7 @@
         updateClock();
         updateSelectedDayDisplay();
 
-        // Initialize Signature Pad Canvas
+        // Initialize Signature Pad Canvas with Dynamic Theme Ink Color
         function initSignaturePad() {
             const canvas = document.getElementById('pad');
             const ratio = window.devicePixelRatio || 1;
@@ -355,9 +397,13 @@
             canvas.height = canvas.offsetHeight * ratio;
             canvas.getContext("2d").scale(ratio, ratio);
 
+            const isDark = document.documentElement.classList.contains('dark');
+            const penColor = isDark ? '#60A5FA' : '#0071E3'; // Light blue ink in dark mode, Apple Blue in light mode
+
             if (!signaturePad) {
-                signaturePad = new SignaturePad(canvas);
+                signaturePad = new SignaturePad(canvas, { penColor: penColor });
             } else {
+                signaturePad.penColor = penColor;
                 signaturePad.clear();
             }
         }
@@ -367,7 +413,6 @@
             if (signaturePad) signaturePad.clear();
         }
 
-        // Populate Name Dropdown from staffList array
         function populateDropdown() {
             const select = document.getElementById('staffSelect');
             select.innerHTML = '<option value="">-- Select your name --</option>';
@@ -380,24 +425,22 @@
         }
         populateDropdown();
 
-        // View Switcher (Check-in vs Admin)
         function switchView(view) {
             if (view === 'checkin') {
                 document.getElementById('checkinView').classList.remove('hidden');
                 document.getElementById('adminView').classList.add('hidden');
-                document.getElementById('navCheckin').className = "px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white shadow";
-                document.getElementById('navAdmin').className = "px-4 py-2 text-sm font-semibold rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300";
+                document.getElementById('navCheckin').className = "px-4 py-2 text-xs font-bold rounded-2xl bg-apple-blue text-white shadow-md active:scale-95 transition-all";
+                document.getElementById('navAdmin').className = "px-4 py-2 text-xs font-bold rounded-2xl bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition-all";
                 setTimeout(initSignaturePad, 50);
             } else {
                 document.getElementById('checkinView').classList.add('hidden');
                 document.getElementById('adminView').classList.remove('hidden');
-                document.getElementById('navAdmin').className = "px-4 py-2 text-sm font-semibold rounded-lg bg-blue-600 text-white shadow";
-                document.getElementById('navCheckin').className = "px-4 py-2 text-sm font-semibold rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300";
+                document.getElementById('navAdmin').className = "px-4 py-2 text-xs font-bold rounded-2xl bg-apple-blue text-white shadow-md active:scale-95 transition-all";
+                document.getElementById('navCheckin').className = "px-4 py-2 text-xs font-bold rounded-2xl bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition-all";
                 renderAdminData();
             }
         }
 
-        // Secure PIN Access Control
         function checkAdminAccess() {
             let pin = prompt("Enter Admin PIN:");
             if (pin === null) return;
@@ -427,7 +470,6 @@
             }
         }
 
-        // Change Admin PIN Prompt
         function changePinPrompt() {
             let current = prompt("Enter current Admin PIN:");
             if (current === adminPin) {
@@ -444,8 +486,7 @@
             }
         }
 
-        // Handle Form Submission (Saves Locally & Sends to Google Sheet)
-        async function handleCheckIn(e) {
+        function handleCheckIn(e) {
             e.preventDefault();
             const name = document.getElementById('staffSelect').value;
             const shift = document.getElementById('shiftSelect').value;
@@ -469,37 +510,18 @@
             const now = new Date();
             const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-            const payload = {
+            attendanceLogs.unshift({
+                id: Date.now(),
                 name: name,
                 dayOfWeek: dayOfWeek,
                 shift: shift,
                 date: date,
                 time: time,
                 signature: sigDataUrl
-            };
-
-            // 1. Add new log to LocalStorage archive
-            attendanceLogs.unshift({
-                id: Date.now(),
-                ...payload
             });
+
             localStorage.setItem('motorway_logs', JSON.stringify(attendanceLogs));
 
-            // 2. Send data directly to Google Sheet
-            if (GOOGLE_SCRIPT_URL) {
-                try {
-                    fetch(GOOGLE_SCRIPT_URL, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                } catch (err) {
-                    console.error("Error posting to Google Sheet:", err);
-                }
-            }
-
-            // Reset form UI
             document.getElementById('checkinForm').reset();
             document.getElementById('attendanceDate').valueAsDate = new Date();
             updateSelectedDayDisplay();
@@ -510,12 +532,11 @@
 
         function showAlert(msg, type) {
             const box = document.getElementById('alertBox');
-            const cls = type === 'ok' ? 'bg-green-100 text-green-800 border-green-200' : 'bg-red-100 text-red-800 border-red-200';
-            box.innerHTML = `<div class="p-3 mb-4 border rounded-xl font-medium text-sm ${cls}">${msg}</div>`;
+            const cls = type === 'ok' ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' : 'bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-800';
+            box.innerHTML = `<div class="p-3.5 mb-5 border rounded-2xl font-semibold text-xs tracking-wide shadow-sm ${cls}">${msg}</div>`;
             setTimeout(() => { box.innerHTML = ''; }, 4000);
         }
 
-        // Add New Staff Member
         function addStaff() {
             const input = document.getElementById('newStaffInput');
             const val = input.value.trim();
@@ -534,7 +555,6 @@
             renderAdminData();
         }
 
-        // Remove Staff Member
         function removeStaff(name) {
             if (confirm(`Remove ${name} from the roster?`)) {
                 staffList = staffList.filter(s => s !== name);
@@ -544,20 +564,17 @@
             }
         }
 
-        // Render Admin Panel Data
         function renderAdminData() {
-            // Roster Table
             const staffTbody = document.getElementById('adminStaffTable');
             staffTbody.innerHTML = staffList.map(s => `
-                <tr class="border-b">
-                    <td class="p-2 font-medium">${s}</td>
-                    <td class="p-2 text-right">
-                        <button onclick="removeStaff('${s}')" class="px-2 py-1 bg-red-100 text-red-600 rounded text-xs font-bold hover:bg-red-200">Remove</button>
+                <tr class="border-b border-slate-200/50 dark:border-slate-700/50">
+                    <td class="p-2.5 font-medium text-slate-800 dark:text-slate-200">${s}</td>
+                    <td class="p-2.5 text-right">
+                        <button onclick="removeStaff('${s}')" class="px-2.5 py-1 bg-rose-100 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 rounded-lg text-xs font-bold hover:bg-rose-200 active:scale-95 transition-all">Remove</button>
                     </td>
                 </tr>
-            `).join('') || `<tr><td class="p-2 text-gray-500">No staff found.</td></tr>`;
+            `).join('') || `<tr><td class="p-2.5 text-slate-500">No staff found.</td></tr>`;
 
-            // Summary Stats
             let stats = {};
             staffList.forEach(s => stats[s] = { dayShifts: 0, nightShifts: 0, uniqueDays: new Set(), total: 0 });
 
@@ -571,41 +588,38 @@
 
             const summaryTbody = document.getElementById('summaryTableBody');
             summaryTbody.innerHTML = Object.keys(stats).map(name => `
-                <tr class="border-b">
-                    <td class="p-2 font-medium">${name}</td>
-                    <td class="p-2 text-amber-700 font-semibold">${stats[name].dayShifts}</td>
-                    <td class="p-2 text-indigo-700 font-semibold">${stats[name].nightShifts}</td>
-                    <td class="p-2 text-blue-700 font-semibold">${stats[name].uniqueDays.size}</td>
-                    <td class="p-2 font-bold">${stats[name].total}</td>
+                <tr class="border-b border-slate-200/50 dark:border-slate-700/50">
+                    <td class="p-2.5 font-medium text-slate-800 dark:text-slate-200">${name}</td>
+                    <td class="p-2.5 text-amber-600 dark:text-amber-400 font-semibold">${stats[name].dayShifts}</td>
+                    <td class="p-2.5 text-indigo-600 dark:text-indigo-400 font-semibold">${stats[name].nightShifts}</td>
+                    <td class="p-2.5 text-blue-600 dark:text-blue-400 font-semibold">${stats[name].uniqueDays.size}</td>
+                    <td class="p-2.5 font-bold text-slate-900 dark:text-white">${stats[name].total}</td>
                 </tr>
             `).join('');
 
-            // Total logs counter update
             document.getElementById('totalLogsCount').textContent = attendanceLogs.length;
 
-            // Logs Table
             const logsTbody = document.getElementById('logsTableBody');
             logsTbody.innerHTML = attendanceLogs.map(r => {
                 const dayName = r.dayOfWeek || getDayOfWeekName(r.date);
-                const sigDisplay = r.signature ? `<img src="${r.signature}" class="h-8 border bg-white rounded" alt="Sig">` : '<span class="text-xs text-gray-400">Imported</span>';
+                const sigDisplay = r.signature ? `<img src="${r.signature}" class="h-8 border bg-white rounded-lg p-0.5" alt="Sig">` : '<span class="text-xs text-slate-400">Imported</span>';
                 return `
-                    <tr class="border-b">
-                        <td class="p-2 font-medium">${r.name}</td>
-                        <td class="p-2 font-semibold text-gray-700">${dayName}</td>
-                        <td class="p-2">
-                            <span class="px-2 py-1 text-xs font-bold rounded-full ${r.shift === 'DAY' ? 'bg-amber-100 text-amber-800' : 'bg-indigo-100 text-indigo-800'}">
+                    <tr class="border-b border-slate-200/50 dark:border-slate-700/50 text-slate-800 dark:text-slate-200">
+                        <td class="p-2.5 font-medium">${r.name}</td>
+                        <td class="p-2.5 font-semibold">${dayName}</td>
+                        <td class="p-2.5">
+                            <span class="px-2.5 py-1 text-[10px] font-extrabold rounded-full ${r.shift === 'DAY' ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300' : 'bg-indigo-100 dark:bg-indigo-950/80 text-indigo-800 dark:text-indigo-300'}">
                                 ${r.shift || 'DAY'}
                             </span>
                         </td>
-                        <td class="p-2">${r.date}</td>
-                        <td class="p-2">${r.time}</td>
-                        <td class="p-2">${sigDisplay}</td>
+                        <td class="p-2.5">${r.date}</td>
+                        <td class="p-2.5">${r.time}</td>
+                        <td class="p-2.5">${sigDisplay}</td>
                     </tr>
                 `;
-            }).join('') || `<tr><td colspan="6" class="p-2 text-gray-500 text-center">No attendance records yet.</td></tr>`;
+            }).join('') || `<tr><td colspan="6" class="p-2.5 text-slate-500 text-center">No attendance records yet.</td></tr>`;
         }
 
-        // CSV Exporter
         function exportToCSV() {
             if (attendanceLogs.length === 0) {
                 alert("No records to export.");
@@ -625,7 +639,6 @@
             link.click();
         }
 
-        // CSV Importer
         function importCSV(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -675,7 +688,6 @@
             reader.readAsText(file);
         }
 
-        // Clear Local Logs
         function clearAllLogs() {
             if (confirm("Are you sure you want to clear all archived records? Make sure you have exported your Master CSV first!")) {
                 let doubleCheck = prompt("Type 'DELETE' to confirm clearing all data:");
