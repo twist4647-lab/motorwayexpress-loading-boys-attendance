@@ -16,8 +16,8 @@
                             blue: '#0071E3',
                             blueHover: '#0077ED',
                             grayBg: '#F5F5F7',
-                            cardLight: 'rgba(255, 255, 255, 0.85)',
-                            cardDark: 'rgba(28, 28, 30, 0.85)',
+                            cardLight: 'rgba(255, 255, 255, 0.82)',
+                            cardDark: 'rgba(28, 28, 30, 0.82)',
                             darkBg: '#000000',
                             borderLight: 'rgba(0, 0, 0, 0.08)',
                             borderDark: 'rgba(255, 255, 255, 0.12)'
@@ -89,11 +89,11 @@
         /* Custom Apple Styled Dropdown Chevron */
         .apple-select {
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%238E8E93' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%230071E3' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 1rem center;
-            background-size: 1rem;
-            padding-right: 2.5rem;
+            background-size: 1.1rem;
+            padding-right: 2.75rem;
         }
     </style>
 </head>
@@ -161,9 +161,19 @@
                 <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-0.5">Hisense Warehouse • Casual Staff Attendance</p>
             </div>
 
-            <!-- Header Controls with Apple Segmented Switcher & iOS Toggle -->
+            <!-- Header Controls with Frosted Apple Date Capsule & iOS Switch -->
             <div class="flex items-center gap-3 flex-wrap justify-center">
-                <input type="date" id="attendanceDate" onchange="updateSelectedDayDisplay()" class="bg-slate-200/60 dark:bg-slate-800/80 border border-slate-300/50 dark:border-slate-700 px-3 py-1.5 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-apple-blue transition-all">
+                
+                <!-- Apple Frosted Date Capsule Picker -->
+                <div class="relative flex items-center bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl border border-slate-300/50 dark:border-slate-700/60 px-3.5 py-1.5 rounded-2xl shadow-sm hover:border-apple-blue transition-all">
+                    <svg class="w-4 h-4 text-apple-blue mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <input type="date" id="attendanceDate" onchange="updateSelectedDayDisplay()" class="bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer">
+                </div>
                 
                 <!-- Native Apple Segmented Control Bar -->
                 <div class="bg-slate-200/70 dark:bg-slate-800/90 p-1 rounded-2xl flex items-center shadow-inner border border-slate-300/40 dark:border-slate-700/50">
@@ -201,22 +211,27 @@
             <div id="alertBox"></div>
 
             <form id="checkinForm" onsubmit="handleCheckIn(event)" class="space-y-5">
-                <!-- Name Selection Dropdown (Redesigned with Apple Select) -->
+                
+                <!-- Name Selection Dropdown (Frosted Apple Dropdown) -->
                 <div>
                     <label class="block font-semibold text-xs text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wider" for="staffSelect">Choose Your Name</label>
-                    <select id="staffSelect" required class="apple-select w-full p-3.5 border border-slate-200 dark:border-slate-700 rounded-2xl bg-white/90 dark:bg-slate-800/90 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-apple-blue focus:outline-none transition-all shadow-sm">
+                    <select id="staffSelect" required class="apple-select w-full p-4 border border-slate-200/80 dark:border-slate-700 rounded-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl text-slate-900 dark:text-white font-semibold text-sm focus:ring-2 focus:ring-apple-blue focus:outline-none transition-all shadow-sm">
                         <option value="">-- Select your name --</option>
                     </select>
                 </div>
 
-                <!-- Shift Selection Field (Redesigned with Apple Select) -->
+                <!-- Shift Selection (Apple Segmented Capsule Switcher) -->
                 <div>
-                    <label class="block font-semibold text-xs text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wider" for="shiftSelect">Select Shift</label>
-                    <select id="shiftSelect" required class="apple-select w-full p-3.5 border border-slate-200 dark:border-slate-700 rounded-2xl bg-white/90 dark:bg-slate-800/90 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-apple-blue focus:outline-none transition-all shadow-sm">
-                        <option value="">-- Select Shift --</option>
-                        <option value="DAY"> DAY SHIFT </option>
-                        <option value="NIGHT"> NIGHT SHIFT </option>
-                    </select>
+                    <label class="block font-semibold text-xs text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wider">Select Shift</label>
+                    <input type="hidden" id="shiftSelect" required value="">
+                    <div class="bg-slate-200/60 dark:bg-slate-800/80 p-1.5 rounded-2xl border border-slate-300/40 dark:border-slate-700/50 flex gap-2 backdrop-blur-xl shadow-inner">
+                        <button type="button" onclick="setShift('DAY')" id="shiftBtnDay" class="flex-1 py-3 text-xs font-bold rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200 active:scale-95 flex items-center justify-center gap-1.5">
+                            ☀️ DAY SHIFT
+                        </button>
+                        <button type="button" onclick="setShift('NIGHT')" id="shiftBtnNight" class="flex-1 py-3 text-xs font-bold rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200 active:scale-95 flex items-center justify-center gap-1.5">
+                            🌙 NIGHT SHIFT
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Automatic Day Indicator -->
@@ -379,6 +394,21 @@
         }
         initTheme();
 
+        // Apple Segmented Shift Picker Switcher
+        function setShift(shift) {
+            document.getElementById('shiftSelect').value = shift;
+            const btnDay = document.getElementById('shiftBtnDay');
+            const btnNight = document.getElementById('shiftBtnNight');
+
+            if (shift === 'DAY') {
+                btnDay.className = "flex-1 py-3 text-xs font-bold rounded-xl bg-white dark:bg-apple-blue text-amber-600 dark:text-white shadow-sm transition-all duration-200 flex items-center justify-center gap-1.5";
+                btnNight.className = "flex-1 py-3 text-xs font-bold rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200 flex items-center justify-center gap-1.5";
+            } else if (shift === 'NIGHT') {
+                btnNight.className = "flex-1 py-3 text-xs font-bold rounded-xl bg-white dark:bg-apple-blue text-indigo-600 dark:text-white shadow-sm transition-all duration-200 flex items-center justify-center gap-1.5";
+                btnDay.className = "flex-1 py-3 text-xs font-bold rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200 flex items-center justify-center gap-1.5";
+            }
+        }
+
         // Web Audio API Confirmation Chime
         function playSuccessChime() {
             try {
@@ -386,8 +416,8 @@
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5 note
-                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5 note
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15);
                 gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
                 osc.connect(gain);
@@ -509,7 +539,6 @@
         }
         populateDropdown();
 
-        // View Switcher with Apple Segmented Control Styling
         function switchView(view) {
             const btnCheckin = document.getElementById('navCheckin');
             const btnAdmin = document.getElementById('navAdmin');
@@ -610,7 +639,6 @@
 
             localStorage.setItem('motorway_logs', JSON.stringify(attendanceLogs));
 
-            // Play Apple Audio Chime & Trigger Visual Success Pop-in Overlay
             playSuccessChime();
             const overlay = document.getElementById('successOverlay');
             const overlayMsg = document.getElementById('successOverlayMsg');
@@ -620,6 +648,9 @@
             setTimeout(() => {
                 overlay.classList.add('hidden');
                 document.getElementById('checkinForm').reset();
+                document.getElementById('shiftSelect').value = '';
+                document.getElementById('shiftBtnDay').className = "flex-1 py-3 text-xs font-bold rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200 flex items-center justify-center gap-1.5";
+                document.getElementById('shiftBtnNight').className = "flex-1 py-3 text-xs font-bold rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200 flex items-center justify-center gap-1.5";
                 document.getElementById('attendanceDate').valueAsDate = new Date();
                 updateSelectedDayDisplay();
                 signaturePad.clear();
@@ -661,14 +692,12 @@
         }
 
         function renderAdminData() {
-            // Update KPI Metric Cards
             document.getElementById('kpiTotalLogs').textContent = attendanceLogs.length;
             document.getElementById('kpiActiveRoster').textContent = staffList.length;
             const todayStr = new Date().toISOString().slice(0, 10);
             const todayCount = attendanceLogs.filter(l => l.date === todayStr).length;
             document.getElementById('kpiTodayCount').textContent = todayCount;
 
-            // Roster Table with Search Filter
             const staffSearch = (document.getElementById('staffSearchInput')?.value || '').toLowerCase();
             const filteredStaff = staffList.filter(s => s.toLowerCase().includes(staffSearch));
             
@@ -711,7 +740,6 @@
 
             document.getElementById('totalLogsCount').textContent = attendanceLogs.length;
 
-            // Logs Table with Search Filter
             const logSearch = (document.getElementById('logSearchInput')?.value || '').toLowerCase();
             const filteredLogs = attendanceLogs.filter(r => 
                 r.name.toLowerCase().includes(logSearch) || 
