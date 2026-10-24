@@ -16,8 +16,8 @@
                             blue: '#0071E3',
                             blueHover: '#0077ED',
                             grayBg: '#F5F5F7',
-                            cardLight: 'rgba(255, 255, 255, 0.85)',
-                            cardDark: 'rgba(28, 28, 30, 0.85)',
+                            cardLight: 'rgba(255, 255, 255, 0.82)',
+                            cardDark: 'rgba(28, 28, 30, 0.82)',
                             darkBg: '#000000',
                             borderLight: 'rgba(0, 0, 0, 0.08)',
                             borderDark: 'rgba(255, 255, 255, 0.12)'
@@ -120,36 +120,42 @@
     </div>
 
     <!-- MAIN APP CONTAINER (Apple Frosted Glass Style) -->
-    <div id="mainContainer" class="max-w-4xl mx-auto bg-apple-cardLight dark:bg-apple-cardDark backdrop-blur-xl border border-apple-borderLight dark:border-apple-borderDark rounded-3xl shadow-2xl p-6 md:p-8 opacity-0 transition-all duration-700">
+    <div id="mainContainer" class="max-w-4xl mx-auto bg-apple-cardLight dark:bg-apple-cardDark backdrop-blur-2xl border border-apple-borderLight dark:border-apple-borderDark rounded-[28px] shadow-[0_20px_50px_rgba(0,0,0,0.08)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] p-6 md:p-8 opacity-0 transition-all duration-700">
         
         <!-- Header & Navigation Switcher -->
-        <div class="flex flex-col md:flex-row justify-between items-center border-b border-gray-200/50 dark:border-gray-800/80 pb-5 mb-6 gap-4">
+        <div class="flex flex-col md:flex-row justify-between items-center border-b border-gray-200/60 dark:border-gray-800/80 pb-5 mb-6 gap-4">
             <div>
                 <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Motorway Express</h1>
-                <p class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mt-0.5">Hisense Warehouse • Casual Staff Attendance</p>
+                <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-0.5">Hisense Warehouse • Casual Staff Attendance</p>
             </div>
 
-            <!-- Header Action Controls -->
-            <div class="flex items-center gap-3">
-                <input type="date" id="attendanceDate" onchange="updateSelectedDayDisplay()" class="bg-slate-100/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-2xl text-sm font-semibold text-slate-800 dark:text-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-apple-blue">
+            <!-- Header Action Controls with Native iOS Switch -->
+            <div class="flex items-center gap-3 flex-wrap">
+                <input type="date" id="attendanceDate" onchange="updateSelectedDayDisplay()" class="bg-slate-200/50 dark:bg-slate-800/80 border border-slate-300/50 dark:border-slate-700 px-3.5 py-2 rounded-2xl text-xs font-semibold text-slate-800 dark:text-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-apple-blue transition-all">
                 
-                <button onclick="switchView('checkin')" id="navCheckin" class="px-4 py-2 text-xs font-bold rounded-2xl bg-apple-blue text-white shadow-md active:scale-95 transition-all">Check-In</button>
-                <button onclick="checkAdminAccess()" id="navAdmin" class="px-4 py-2 text-xs font-bold rounded-2xl bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition-all">Admin</button>
+                <button onclick="switchView('checkin')" id="navCheckin" class="px-4 py-2 text-xs font-bold rounded-2xl bg-apple-blue text-white shadow-sm active:scale-95 transition-all">Check-In</button>
+                <button onclick="checkAdminAccess()" id="navAdmin" class="px-4 py-2 text-xs font-bold rounded-2xl bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition-all">Admin</button>
                 
-                <!-- iOS Style Dark Mode Toggle Switch -->
-                <button onclick="toggleDarkMode()" title="Toggle Dark/Light Mode" class="p-2 rounded-2xl bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-90 transition-all">
-                    <!-- Sun Icon -->
-                    <svg id="sunIcon" class="w-5 h-5 hidden dark:block text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                    <!-- Moon Icon -->
-                    <svg id="moonIcon" class="w-5 h-5 block dark:hidden text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
-                </button>
+                <!-- Authentic iOS Pill Toggle Switch -->
+                <div class="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-800">
+                    <button onclick="toggleDarkMode()" class="relative inline-flex h-7 w-12 items-center rounded-full bg-slate-300 dark:bg-apple-blue transition-colors duration-300 focus:outline-none shadow-inner" id="iosToggleBtn">
+                        <span class="sr-only">Toggle Dark Mode</span>
+                        <!-- Sliding Knob -->
+                        <span id="iosToggleKnob" class="inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform duration-300 ease-out translate-x-1 dark:translate-x-6 flex items-center justify-center">
+                            <!-- Sun Icon -->
+                            <svg id="sunIcon" class="w-3 h-3 text-amber-500 block dark:hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clip-rule="evenodd"></path></svg>
+                            <!-- Moon Icon -->
+                            <svg id="moonIcon" class="w-3 h-3 text-apple-blue hidden dark:block" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                        </span>
+                    </button>
+                </div>
             </div>
         </div>
 
         <!-- VIEW 1: CHECK-IN PAGE -->
         <div id="checkinView">
-            <!-- iOS Status Badge Banner -->
-            <div class="bg-blue-50/60 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-900/50 rounded-2xl p-4 mb-6 flex justify-between items-center backdrop-blur-md">
+            <!-- iOS Status Banner -->
+            <div class="bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-900/50 rounded-2xl p-4 mb-6 flex justify-between items-center backdrop-blur-md">
                 <div>
                     <span class="text-[10px] uppercase font-bold text-apple-blue tracking-widest">Live Clock</span>
                     <div id="liveClock" class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">--:--:--</div>
@@ -165,7 +171,7 @@
             <form id="checkinForm" onsubmit="handleCheckIn(event)" class="space-y-5">
                 <!-- Name Selection Dropdown -->
                 <div>
-                    <label class="block font-semibold text-sm text-slate-700 dark:text-slate-300 mb-2" for="staffSelect">Choose Your Name</label>
+                    <label class="block font-semibold text-xs text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wider" for="staffSelect">Choose Your Name</label>
                     <select id="staffSelect" required class="w-full p-3.5 border border-slate-200 dark:border-slate-700 rounded-2xl bg-white/90 dark:bg-slate-800/90 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-apple-blue focus:outline-none transition-all shadow-sm">
                         <option value="">-- Select your name --</option>
                     </select>
@@ -173,7 +179,7 @@
 
                 <!-- Shift Selection Field -->
                 <div>
-                    <label class="block font-semibold text-sm text-slate-700 dark:text-slate-300 mb-2" for="shiftSelect">Select Shift</label>
+                    <label class="block font-semibold text-xs text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wider" for="shiftSelect">Select Shift</label>
                     <select id="shiftSelect" required class="w-full p-3.5 border border-slate-200 dark:border-slate-700 rounded-2xl bg-white/90 dark:bg-slate-800/90 text-slate-900 dark:text-white font-medium focus:ring-2 focus:ring-apple-blue focus:outline-none transition-all shadow-sm">
                         <option value="">-- Select Shift --</option>
                         <option value="DAY"> DAY SHIFT </option>
@@ -182,25 +188,25 @@
                 </div>
 
                 <!-- Automatic Day Indicator -->
-                <div class="bg-slate-100/70 dark:bg-slate-800/70 p-3.5 rounded-2xl border border-slate-200/50 dark:border-slate-700/50 flex justify-between items-center">
+                <div class="bg-slate-100/80 dark:bg-slate-800/70 p-3.5 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 flex justify-between items-center">
                     <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Check-In Day</span>
                     <span id="autoDayBadge" class="px-3.5 py-1 bg-blue-100 dark:bg-blue-900/60 text-apple-blue dark:text-blue-300 text-xs font-bold rounded-xl">-</span>
                 </div>
 
                 <!-- Signature Pad Surface -->
                 <div>
-                    <label class="block font-semibold text-sm text-slate-700 dark:text-slate-300 mb-2">Signature</label>
+                    <label class="block font-semibold text-xs text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wider">Signature</label>
                     <div class="border border-slate-300 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900/80 p-2 shadow-inner">
                         <canvas id="pad" class="w-full h-40 touch-none rounded-xl"></canvas>
                     </div>
                     <div class="flex justify-between items-center mt-2.5">
-                        <button type="button" onclick="clearPad()" class="px-3 py-1.5 text-xs font-semibold bg-slate-200/80 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl transition-all active:scale-95">Clear Signature</button>
+                        <button type="button" onclick="clearPad()" class="px-3.5 py-1.5 text-xs font-semibold bg-slate-200/80 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl transition-all active:scale-95">Clear Signature</button>
                         <span id="sigWarning" class="text-xs text-red-500 font-medium">Signature required</span>
                     </div>
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="w-full py-3.5 bg-apple-blue hover:bg-apple-blueHover text-white font-bold text-base rounded-2xl shadow-lg active:scale-[0.98] transition-all">
+                <button type="submit" class="w-full py-4 bg-apple-blue hover:bg-apple-blueHover text-white font-bold text-base rounded-2xl shadow-md active:scale-[0.98] transition-all">
                     Submit Check-In
                 </button>
             </form>
@@ -209,7 +215,7 @@
         <!-- VIEW 2: ADMIN PANEL -->
         <div id="adminView" class="hidden space-y-6">
             <!-- Admin Controls -->
-            <div class="bg-slate-100/70 dark:bg-slate-800/70 border border-slate-200/50 dark:border-slate-700/50 p-4 rounded-2xl flex flex-wrap justify-between items-center gap-4">
+            <div class="bg-slate-100/80 dark:bg-slate-800/70 border border-slate-200/60 dark:border-slate-700/60 p-4 rounded-2xl flex flex-wrap justify-between items-center gap-4">
                 <div>
                     <h3 class="font-bold text-slate-900 dark:text-white">Admin Control Hub</h3>
                     <p class="text-xs text-slate-500 dark:text-slate-400">Manage roster, inspect summaries, or export merged CSV logs.</p>
@@ -398,7 +404,7 @@
             canvas.getContext("2d").scale(ratio, ratio);
 
             const isDark = document.documentElement.classList.contains('dark');
-            const penColor = isDark ? '#60A5FA' : '#0071E3'; // Light blue ink in dark mode, Apple Blue in light mode
+            const penColor = isDark ? '#60A5FA' : '#0071E3';
 
             if (!signaturePad) {
                 signaturePad = new SignaturePad(canvas, { penColor: penColor });
@@ -429,14 +435,14 @@
             if (view === 'checkin') {
                 document.getElementById('checkinView').classList.remove('hidden');
                 document.getElementById('adminView').classList.add('hidden');
-                document.getElementById('navCheckin').className = "px-4 py-2 text-xs font-bold rounded-2xl bg-apple-blue text-white shadow-md active:scale-95 transition-all";
-                document.getElementById('navAdmin').className = "px-4 py-2 text-xs font-bold rounded-2xl bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition-all";
+                document.getElementById('navCheckin').className = "px-4 py-2 text-xs font-bold rounded-2xl bg-apple-blue text-white shadow-sm active:scale-95 transition-all";
+                document.getElementById('navAdmin').className = "px-4 py-2 text-xs font-bold rounded-2xl bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition-all";
                 setTimeout(initSignaturePad, 50);
             } else {
                 document.getElementById('checkinView').classList.add('hidden');
                 document.getElementById('adminView').classList.remove('hidden');
-                document.getElementById('navAdmin').className = "px-4 py-2 text-xs font-bold rounded-2xl bg-apple-blue text-white shadow-md active:scale-95 transition-all";
-                document.getElementById('navCheckin').className = "px-4 py-2 text-xs font-bold rounded-2xl bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition-all";
+                document.getElementById('navAdmin').className = "px-4 py-2 text-xs font-bold rounded-2xl bg-apple-blue text-white shadow-sm active:scale-95 transition-all";
+                document.getElementById('navCheckin').className = "px-4 py-2 text-xs font-bold rounded-2xl bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700 active:scale-95 transition-all";
                 renderAdminData();
             }
         }
