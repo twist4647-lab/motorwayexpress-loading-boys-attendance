@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en" class="light" data-theme="apple">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,6 +34,118 @@
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
     
     <style>
+        /* ================= 5 CATCHY LIGHT THEMES ================= */
+        :root[data-theme="apple"] {
+            --bg-gradient: #F5F5F7;
+            --text-main: #0f172a;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-border: rgba(0, 0, 0, 0.08);
+            --accent-color: #0071E3;
+        }
+        :root[data-theme="mint"] {
+            --bg-gradient: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #d1fae5 100%);
+            --text-main: #064e3b;
+            --card-bg: rgba(255, 255, 255, 0.88);
+            --card-border: rgba(167, 243, 208, 0.9);
+            --accent-color: #059669;
+        }
+        :root[data-theme="peach"] {
+            --bg-gradient: linear-gradient(135deg, #fffbeb 0%, #fff7ed 50%, #fed7aa 100%);
+            --text-main: #7c2d12;
+            --card-bg: rgba(255, 255, 255, 0.88);
+            --card-border: rgba(253, 186, 116, 0.8);
+            --accent-color: #ea580c;
+        }
+        :root[data-theme="lavender"] {
+            --bg-gradient: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 50%, #e9d5ff 100%);
+            --text-main: #581c87;
+            --card-bg: rgba(255, 255, 255, 0.88);
+            --card-border: rgba(216, 180, 254, 0.8);
+            --accent-color: #7c3aed;
+        }
+        :root[data-theme="ocean"] {
+            --bg-gradient: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #bae6fd 100%);
+            --text-main: #0c4a6e;
+            --card-bg: rgba(255, 255, 255, 0.88);
+            --card-border: rgba(125, 211, 252, 0.8);
+            --accent-color: #0284c7;
+        }
+
+        html.light body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+        }
+
+        /* ================= OVERHEAD PULL-CORD COMPONENT ================= */
+        .pull-cord-assembly {
+            position: absolute;
+            top: 0;
+            right: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            z-index: 50;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            touch-action: manipulation;
+        }
+
+        .cord-string {
+            width: 3px;
+            height: 28px;
+            background: linear-gradient(to right, #94a3b8, #cbd5e1, #64748b);
+            box-shadow: 1px 0 3px rgba(0,0,0,0.15);
+            transform-origin: top center;
+            transition: height 0.15s ease-out;
+        }
+
+        .cord-handle {
+            width: 14px;
+            height: 22px;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, #e2e8f0, #94a3b8);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.25), inset 0 2px 3px rgba(255,255,255,0.8);
+            border: 1px solid rgba(255,255,255,0.6);
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .pull-cord-assembly:hover .cord-handle {
+            transform: translateY(3px) scale(1.05);
+            background: linear-gradient(135deg, #60a5fa, #2563eb);
+        }
+
+        .pull-cord-assembly:active .cord-string {
+            height: 48px;
+        }
+
+        .pull-cord-assembly:active .cord-handle {
+            transform: translateY(14px) scale(0.95);
+        }
+
+        .cord-tooltip {
+            position: absolute;
+            top: 56px;
+            right: -24px;
+            background: rgba(15, 23, 42, 0.9);
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 8px;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateY(-4px);
+            transition: all 0.2s ease;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .pull-cord-assembly:hover .cord-tooltip {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         /* Slow-motion glowing pulse specifically for Hisense */
         @keyframes hisenseGlow {
             0% {
@@ -101,13 +213,11 @@
 
     <!-- INTRO SPLASH SCREEN WITH SHOWROOM BACKGROUND -->
     <div id="splashScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-opacity duration-1000 overflow-hidden">
-        <!-- Background Image & Overlay -->
         <div class="absolute inset-0 z-0">
             <img src="image_f69660.jpg" alt="Hisense Showroom" class="w-full h-full object-cover opacity-75">
             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20"></div>
         </div>
 
-        <!-- Centered Branding Content -->
         <div class="relative z-10 text-center px-6 select-none flex flex-col items-center">
             <h1 class="text-5xl md:text-7xl font-black text-white tracking-tight leading-tight animate-hisense-glow">
                 Hisense
@@ -119,7 +229,6 @@
             </p>
         </div>
 
-        <!-- Fast Moving Truck Track -->
         <div class="truck-track z-20">
             <div class="fast-truck">
                 <svg class="w-16 h-16 md:w-20 md:h-20 text-blue-300 drop-shadow-[0_0_12px_rgba(59,130,246,0.9)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -129,7 +238,6 @@
             </div>
         </div>
         
-        <!-- Loading Progress Indicator -->
         <div class="absolute bottom-6 z-10 flex flex-col items-center gap-2">
             <span class="text-xs uppercase tracking-widest text-gray-200 font-semibold drop-shadow">Initializing System...</span>
             <div class="w-36 h-1 bg-gray-700/80 rounded-full overflow-hidden">
@@ -138,9 +246,16 @@
         </div>
     </div>
 
-    <!-- MAIN APP CONTAINER (Apple Frosted Glass Style) -->
+    <!-- MAIN APP CONTAINER -->
     <div id="mainContainer" class="relative max-w-4xl mx-auto bg-apple-cardLight dark:bg-apple-cardDark backdrop-blur-2xl border border-apple-borderLight dark:border-apple-borderDark rounded-[28px] shadow-[0_20px_50px_rgba(0,0,0,0.08)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.4)] p-6 md:p-8 opacity-0 transition-all duration-700 overflow-hidden">
         
+        <!-- OVERHEAD PULL-CORD THEME TOGGLE -->
+        <div class="pull-cord-assembly" onclick="cycleTheme()" title="Pull or click to change theme">
+            <div class="cord-string"></div>
+            <div class="cord-handle"></div>
+            <div id="cordTooltip" class="cord-tooltip">Theme: Apple Clean</div>
+        </div>
+
         <!-- SUCCESS CONFIRMATION OVERLAY -->
         <div id="successOverlay" class="hidden absolute inset-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center transition-all duration-300">
             <div class="animate-pop-in flex flex-col items-center">
@@ -155,7 +270,7 @@
         </div>
 
         <!-- Header & Navigation Switcher -->
-        <div class="flex flex-col md:flex-row justify-between items-center border-b border-gray-200/60 dark:border-gray-800/80 pb-5 mb-6 gap-4">
+        <div class="flex flex-col md:flex-row justify-between items-center border-b border-gray-200/60 dark:border-gray-800/80 pb-5 mb-6 gap-4 pr-12 md:pr-16">
             <div>
                 <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">Motorway Express</h1>
                 <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-widest mt-0.5">Hisense Warehouse • Casual Staff Attendance</p>
@@ -196,7 +311,6 @@
 
         <!-- VIEW 1: CHECK-IN PAGE -->
         <div id="checkinView">
-            <!-- iOS Status Banner -->
             <div class="bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-900/50 rounded-2xl p-4 mb-6 flex justify-between items-center backdrop-blur-md">
                 <div>
                     <span class="text-[10px] uppercase font-bold text-apple-blue tracking-widest">Live Clock</span>
@@ -208,11 +322,11 @@
                 </div>
             </div>
 
+            <button type="button" id="syncBadge" onclick="flushQueue()" class="hidden w-full mb-4 px-4 py-2.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold text-center hover:bg-amber-100 transition"></button>
+
             <div id="alertBox"></div>
 
             <form id="checkinForm" onsubmit="handleCheckIn(event)" class="space-y-5">
-                
-                <!-- Name Selection Dropdown (Frosted Apple Dropdown) -->
                 <div>
                     <label class="block font-semibold text-xs text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wider" for="staffSelect">Choose Your Name</label>
                     <select id="staffSelect" required class="apple-select w-full p-4 border border-slate-200/80 dark:border-slate-700 rounded-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl text-slate-900 dark:text-white font-semibold text-sm focus:ring-2 focus:ring-apple-blue focus:outline-none transition-all shadow-sm">
@@ -220,7 +334,6 @@
                     </select>
                 </div>
 
-                <!-- Shift Selection (Apple Segmented Capsule Switcher) -->
                 <div>
                     <label class="block font-semibold text-xs text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wider">Select Shift</label>
                     <input type="hidden" id="shiftSelect" required value="">
@@ -234,13 +347,11 @@
                     </div>
                 </div>
 
-                <!-- Automatic Day Indicator -->
                 <div class="bg-slate-100/80 dark:bg-slate-800/70 p-3.5 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 flex justify-between items-center">
                     <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Check-In Day</span>
                     <span id="autoDayBadge" class="px-3.5 py-1 bg-blue-100 dark:bg-blue-900/60 text-apple-blue dark:text-blue-300 text-xs font-bold rounded-xl">-</span>
                 </div>
 
-                <!-- Signature Pad Surface -->
                 <div>
                     <label class="block font-semibold text-xs text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wider">Signature</label>
                     <div class="border border-slate-300 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-900/80 p-2 shadow-inner">
@@ -252,8 +363,7 @@
                     </div>
                 </div>
 
-                <!-- Submit Button -->
-                <button type="submit" class="w-full py-4 bg-apple-blue hover:bg-apple-blueHover text-white font-bold text-base rounded-2xl shadow-md active:scale-[0.98] transition-all">
+                <button type="submit" id="submitBtn" class="w-full py-4 bg-apple-blue hover:bg-apple-blueHover text-white font-bold text-base rounded-2xl shadow-md active:scale-[0.98] transition-all">
                     Submit Check-In
                 </button>
             </form>
@@ -261,7 +371,6 @@
 
         <!-- VIEW 2: ADMIN PANEL -->
         <div id="adminView" class="hidden space-y-6">
-            <!-- Admin KPI Metric Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="bg-white/80 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 p-4 rounded-2xl shadow-sm flex items-center justify-between">
                     <div>
@@ -286,7 +395,6 @@
                 </div>
             </div>
 
-            <!-- Admin Controls -->
             <div class="bg-slate-100/80 dark:bg-slate-800/70 border border-slate-200/60 dark:border-slate-700/60 p-4 rounded-2xl flex flex-wrap justify-between items-center gap-4">
                 <div>
                     <h3 class="font-bold text-slate-900 dark:text-white">Admin Control Hub</h3>
@@ -304,7 +412,6 @@
                 </div>
             </div>
 
-            <!-- Staff Management Card with Search -->
             <div class="bg-white/80 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-4 shadow-sm">
                 <div class="flex flex-col md:flex-row justify-between items-center mb-3 gap-3">
                     <h3 class="font-bold text-slate-900 dark:text-white text-sm">Manage Staff Roster</h3>
@@ -321,7 +428,6 @@
                 </div>
             </div>
 
-            <!-- Summary Card -->
             <div class="bg-white/80 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-4 shadow-sm">
                 <h3 class="font-bold text-slate-900 dark:text-white mb-3 text-sm">Days Present & Shift Summary</h3>
                 <div class="overflow-x-auto">
@@ -340,7 +446,6 @@
                 </div>
             </div>
 
-            <!-- Detailed Logs Card with Search -->
             <div class="bg-white/80 dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-4 shadow-sm">
                 <div class="flex flex-col md:flex-row justify-between items-center mb-3 gap-3">
                     <h3 class="font-bold text-slate-900 dark:text-white text-sm">All Check-In Logs (<span id="totalLogsCount">0</span>)</h3>
@@ -366,7 +471,35 @@
     </div>
 
     <script>
-        // DARK MODE TOGGLE SYSTEM WITH LOCAL STORAGE MEMORY
+        const GOOGLE_SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzHIF2WzZGnfp7fB1JX1WoxeGPKc2LrJ9sKObPZdj8vYhge1ehSLiGgrRSSeHWN5YCJHQ/exec";
+
+        // Light Theme Cycler Logic
+        const themes = ['apple', 'mint', 'peach', 'lavender', 'ocean'];
+        const themeNames = {
+            apple: 'Apple Clean',
+            mint: 'Fresh Mint',
+            peach: 'Sunset Peach',
+            lavender: 'Lavender Twilight',
+            ocean: 'Sky Ocean'
+        };
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('motorway_theme_light', theme);
+            const tooltip = document.getElementById('cordTooltip');
+            if (tooltip) tooltip.textContent = `Theme: ${themeNames[theme]}`;
+        }
+
+        function cycleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'apple';
+            const nextIdx = (themes.indexOf(current) + 1) % themes.length;
+            applyTheme(themes[nextIdx]);
+        }
+
+        const savedLightheme = localStorage.getItem('motorway_theme_light') || 'apple';
+        applyTheme(savedLightheme);
+
+        // DARK MODE TOGGLE SYSTEM
         function initTheme() {
             const savedTheme = localStorage.getItem('motorway_theme');
             if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -409,26 +542,6 @@
             }
         }
 
-        // Web Audio API Confirmation Chime
-        function playSuccessChime() {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15);
-                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.35);
-            } catch (e) {
-                // AudioContext blocked or unsupported
-            }
-        }
-
         // Automatic Splash Screen Transition Timer (3 seconds)
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
@@ -453,23 +566,47 @@
             "Ayirebi Wise",
             "Godwin Horsu",
             "Godwin Kyekye",
-            "Godfred OK"
+            "Godfred OK",
+            "Oto Richmond",
+            "Amos Adjei Kumi",
+            "John Bruce",
+            "Joseph Koomson",
+            "Alex Atitsogbui",
+            "Robert Appiah Larbi",
+            "Prince Awulosu",
+            "Baba Bawa",
+            "Richmond Bessey",
+            "Jonathan Adjei Abban",
+            "Richmond Adzoda"
         ];
 
-        let staffList = JSON.parse(localStorage.getItem('motorway_staff'));
-        if (!staffList || staffList.length === 0) {
-            staffList = defaultStaff;
-            localStorage.setItem('motorway_staff', JSON.stringify(staffList));
+        function loadJSON(key, fallback) {
+            try {
+                const v = JSON.parse(localStorage.getItem(key));
+                return Array.isArray(v) ? v : fallback;
+            } catch (err) {
+                return fallback;
+            }
         }
 
-        let attendanceLogs = JSON.parse(localStorage.getItem('motorway_logs')) || [];
+        let removedStaff = loadJSON('motorway_removed_staff', []);
+        let staffList = loadJSON('motorway_staff', []);
+        
+        defaultStaff.forEach(n => {
+            if (!staffList.includes(n) && !removedStaff.includes(n)) {
+                staffList.push(n);
+            }
+        });
+        staffList.sort((a, b) => a.localeCompare(b));
+        localStorage.setItem('motorway_staff', JSON.stringify(staffList));
 
-        // Admin Security PINs
+        let attendanceLogs = loadJSON('motorway_logs', []);
+        let offlineQueue = loadJSON('motorway_offline_queue', []);
+
         let adminPin = localStorage.getItem('motorway_admin_pin') || "1234";
         const MASTER_RECOVERY_CODE = "motorway2026";
 
         let signaturePad = null;
-
         document.getElementById('attendanceDate').valueAsDate = new Date();
 
         function getDayOfWeekName(dateString) {
@@ -511,13 +648,11 @@
             canvas.height = canvas.offsetHeight * ratio;
             canvas.getContext("2d").scale(ratio, ratio);
 
-            const isDark = document.documentElement.classList.contains('dark');
-            const penColor = isDark ? '#60A5FA' : '#0071E3';
-
             if (!signaturePad) {
-                signaturePad = new SignaturePad(canvas, { penColor: penColor });
+                signaturePad = new SignaturePad(canvas, {
+                    penColor: "rgb(2, 6, 23)"
+                });
             } else {
-                signaturePad.penColor = penColor;
                 signaturePad.clear();
             }
         }
@@ -540,20 +675,22 @@
         populateDropdown();
 
         function switchView(view) {
-            const btnCheckin = document.getElementById('navCheckin');
-            const btnAdmin = document.getElementById('navAdmin');
+            const checkin = document.getElementById('checkinView');
+            const admin = document.getElementById('adminView');
+            const navCheckin = document.getElementById('navCheckin');
+            const navAdmin = document.getElementById('navAdmin');
 
             if (view === 'checkin') {
-                document.getElementById('checkinView').classList.remove('hidden');
-                document.getElementById('adminView').classList.add('hidden');
-                btnCheckin.className = "px-4 py-1.5 text-xs font-bold rounded-xl bg-white dark:bg-apple-blue text-slate-900 dark:text-white shadow-sm transition-all duration-200 active:scale-95";
-                btnAdmin.className = "px-4 py-1.5 text-xs font-bold rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200 active:scale-95";
-                setTimeout(initSignaturePad, 50);
+                navCheckin.className = "px-4 py-1.5 text-xs font-bold rounded-xl bg-white dark:bg-apple-blue text-slate-900 dark:text-white shadow-sm transition-all duration-200 active:scale-95";
+                navAdmin.className = "px-4 py-1.5 text-xs font-bold rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200 active:scale-95";
+                admin.classList.add('hidden');
+                checkin.classList.remove('hidden');
+                initSignaturePad();
             } else {
-                document.getElementById('checkinView').classList.add('hidden');
-                document.getElementById('adminView').classList.remove('hidden');
-                btnAdmin.className = "px-4 py-1.5 text-xs font-bold rounded-xl bg-white dark:bg-apple-blue text-slate-900 dark:text-white shadow-sm transition-all duration-200 active:scale-95";
-                btnCheckin.className = "px-4 py-1.5 text-xs font-bold rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200 active:scale-95";
+                navAdmin.className = "px-4 py-1.5 text-xs font-bold rounded-xl bg-white dark:bg-apple-blue text-slate-900 dark:text-white shadow-sm transition-all duration-200 active:scale-95";
+                navCheckin.className = "px-4 py-1.5 text-xs font-bold rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200 active:scale-95";
+                checkin.classList.add('hidden');
+                admin.classList.remove('hidden');
                 renderAdminData();
             }
         }
@@ -581,8 +718,6 @@
                     } else if (recoveryInput !== null) {
                         alert("Incorrect Recovery Code!");
                     }
-                } else {
-                    checkAdminAccess();
                 }
             }
         }
@@ -603,7 +738,53 @@
             }
         }
 
-        function handleCheckIn(e) {
+        function updateSyncBadge() {
+            const badge = document.getElementById('syncBadge');
+            if (offlineQueue.length > 0) {
+                badge.classList.remove('hidden');
+                badge.textContent = `⚡ ${offlineQueue.length} check-in(s) pending sync to Google Sheet. Tap to sync now.`;
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+        updateSyncBadge();
+
+        async function pushToGoogleSheet(logPayload) {
+            await fetch(GOOGLE_SHEET_WEB_APP_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(logPayload)
+            });
+        }
+
+        async function flushQueue() {
+            if (!navigator.onLine || offlineQueue.length === 0) return;
+            const toSync = [...offlineQueue];
+            for (const item of toSync) {
+                try {
+                    await pushToGoogleSheet(item);
+                    offlineQueue = offlineQueue.filter(q => q.id !== item.id);
+                    localStorage.setItem('motorway_offline_queue', JSON.stringify(offlineQueue));
+                    updateSyncBadge();
+                } catch (e) {
+                    console.error("Queue item sync error:", e);
+                    break;
+                }
+            }
+        }
+        window.addEventListener('online', flushQueue);
+
+        function showSuccessOverlay(name, shift) {
+            const overlay = document.getElementById('successOverlay');
+            document.getElementById('successOverlayMsg').textContent = `${name} successfully checked in for the ${shift} shift.`;
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 2200);
+        }
+
+        async function handleCheckIn(e) {
             e.preventDefault();
             const name = document.getElementById('staffSelect').value;
             const shift = document.getElementById('shiftSelect').value;
@@ -611,23 +792,34 @@
             const dayOfWeek = getDayOfWeekName(date);
 
             if (!name) {
-                showAlert("Please choose your name.", "err");
+                showAlert("Please select your name from roster.", "err");
                 return;
             }
             if (!shift) {
-                showAlert("Please select a shift.", "err");
+                showAlert("Please choose your shift (Day or Night).", "err");
                 return;
             }
             if (signaturePad.isEmpty()) {
-                showAlert("Please provide your signature.", "err");
+                showAlert("Please sign in the box provided.", "err");
                 return;
             }
+
+            const existingIndex = attendanceLogs.findIndex(l => l.name === name && l.date === date && l.shift === shift);
+            if (existingIndex !== -1) {
+                const prevTime = attendanceLogs[existingIndex].time;
+                const confirmRe = confirm(`${name} has already checked in for today's ${shift} shift at ${prevTime}.\n\nDo you want to re-submit check-in?`);
+                if (!confirmRe) return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.textContent = "Submitting...";
 
             const sigDataUrl = signaturePad.toDataURL();
             const now = new Date();
             const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-            attendanceLogs.unshift({
+            const newLog = {
                 id: Date.now(),
                 name: name,
                 dayOfWeek: dayOfWeek,
@@ -635,33 +827,49 @@
                 date: date,
                 time: time,
                 signature: sigDataUrl
-            });
+            };
 
+            attendanceLogs.unshift(newLog);
             localStorage.setItem('motorway_logs', JSON.stringify(attendanceLogs));
 
-            playSuccessChime();
-            const overlay = document.getElementById('successOverlay');
-            const overlayMsg = document.getElementById('successOverlayMsg');
-            overlayMsg.textContent = `${name} • Checked in for ${dayOfWeek} (${shift} Shift)`;
-            overlay.classList.remove('hidden');
+            let synced = false;
+            if (navigator.onLine) {
+                try {
+                    await pushToGoogleSheet(newLog);
+                    synced = true;
+                } catch (err) {
+                    console.error("Sheet sync error:", err);
+                }
+            }
 
-            setTimeout(() => {
-                overlay.classList.add('hidden');
-                document.getElementById('checkinForm').reset();
-                document.getElementById('shiftSelect').value = '';
-                document.getElementById('shiftBtnDay').className = "flex-1 py-3 text-xs font-bold rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200 flex items-center justify-center gap-1.5";
-                document.getElementById('shiftBtnNight').className = "flex-1 py-3 text-xs font-bold rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all duration-200 flex items-center justify-center gap-1.5";
-                document.getElementById('attendanceDate').valueAsDate = new Date();
-                updateSelectedDayDisplay();
-                signaturePad.clear();
-            }, 1800);
+            if (!synced) {
+                offlineQueue.push(newLog);
+                localStorage.setItem('motorway_offline_queue', JSON.stringify(offlineQueue));
+                updateSyncBadge();
+            }
+
+            document.getElementById('checkinForm').reset();
+            setShift('');
+            document.getElementById('attendanceDate').valueAsDate = new Date();
+            updateSelectedDayDisplay();
+            signaturePad.clear();
+
+            btn.disabled = false;
+            btn.textContent = "Submit Check-In";
+
+            showSuccessOverlay(name, shift);
         }
 
         function showAlert(msg, type) {
             const box = document.getElementById('alertBox');
-            const cls = type === 'ok' ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800' : 'bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-800';
-            box.innerHTML = `<div class="p-3.5 mb-5 border rounded-2xl font-semibold text-xs tracking-wide shadow-sm ${cls}">${msg}</div>`;
-            setTimeout(() => { box.innerHTML = ''; }, 4000);
+            const cls = type === 'ok' 
+                ? 'bg-emerald-50 text-emerald-800 border-emerald-200' 
+                : 'bg-rose-50 text-rose-800 border-rose-200';
+            box.innerHTML = `<div class="p-3.5 mb-5 border rounded-2xl font-medium text-xs shadow-sm flex items-center gap-2 ${cls}">
+                <div class="w-2 h-2 rounded-full ${type === 'ok' ? 'bg-emerald-500' : 'bg-rose-500'}"></div>
+                ${msg}
+            </div>`;
+            setTimeout(() => { box.innerHTML = ''; }, 4500);
         }
 
         function addStaff() {
@@ -674,6 +882,9 @@
                 return;
             }
 
+            removedStaff = removedStaff.filter(r => r.toLowerCase() !== val.toLowerCase());
+            localStorage.setItem('motorway_removed_staff', JSON.stringify(removedStaff));
+
             staffList.push(val);
             staffList.sort((a, b) => a.localeCompare(b));
             localStorage.setItem('motorway_staff', JSON.stringify(staffList));
@@ -683,8 +894,10 @@
         }
 
         function removeStaff(name) {
-            if (confirm(`Remove ${name} from the roster?`)) {
+            if (confirm(`Remove ${name} from roster?`)) {
                 staffList = staffList.filter(s => s !== name);
+                if (!removedStaff.includes(name)) removedStaff.push(name);
+                localStorage.setItem('motorway_removed_staff', JSON.stringify(removedStaff));
                 localStorage.setItem('motorway_staff', JSON.stringify(staffList));
                 populateDropdown();
                 renderAdminData();
@@ -692,29 +905,19 @@
         }
 
         function renderAdminData() {
-            document.getElementById('kpiTotalLogs').textContent = attendanceLogs.length;
-            document.getElementById('kpiActiveRoster').textContent = staffList.length;
-            const todayStr = new Date().toISOString().slice(0, 10);
-            const todayCount = attendanceLogs.filter(l => l.date === todayStr).length;
-            document.getElementById('kpiTodayCount').textContent = todayCount;
+            const staffTerm = (document.getElementById('staffSearchInput')?.value || '').toLowerCase();
+            const logTerm = (document.getElementById('logSearchInput')?.value || '').toLowerCase();
 
-            const staffSearch = (document.getElementById('staffSearchInput')?.value || '').toLowerCase();
-            const filteredStaff = staffList.filter(s => s.toLowerCase().includes(staffSearch));
-            
             const staffTbody = document.getElementById('adminStaffTable');
+            const filteredStaff = staffList.filter(s => s.toLowerCase().includes(staffTerm));
             staffTbody.innerHTML = filteredStaff.map(s => `
-                <tr class="border-b border-slate-200/50 dark:border-slate-700/50">
-                    <td class="p-2.5 font-medium text-slate-800 dark:text-slate-200">${s}</td>
+                <tr class="border-b border-slate-200 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-900/40 transition">
+                    <td class="p-2.5 font-medium">${s}</td>
                     <td class="p-2.5 text-right">
-                        <button onclick="removeStaff('${s}')" class="px-2.5 py-1 bg-rose-100 dark:bg-rose-950/80 text-rose-600 dark:text-rose-400 rounded-lg text-xs font-bold hover:bg-rose-200 active:scale-95 transition-all">Remove</button>
+                        <button onclick="removeStaff('${s}')" class="px-2.5 py-1 bg-rose-50 dark:bg-rose-950/50 text-rose-600 hover:bg-rose-100 rounded-lg text-[10px] font-bold transition">Remove</button>
                     </td>
                 </tr>
-            `).join('') || `
-                <tr>
-                    <td colspan="2" class="p-6 text-center text-slate-400 dark:text-slate-500">
-                        <p class="text-xs font-medium">No matching staff members found.</p>
-                    </td>
-                </tr>`;
+            `).join('') || `<tr><td colspan="2" class="p-3 opacity-60">No staff found matching query.</td></tr>`;
 
             let stats = {};
             staffList.forEach(s => stats[s] = { dayShifts: 0, nightShifts: 0, uniqueDays: new Set(), total: 0 });
@@ -729,49 +932,48 @@
 
             const summaryTbody = document.getElementById('summaryTableBody');
             summaryTbody.innerHTML = Object.keys(stats).map(name => `
-                <tr class="border-b border-slate-200/50 dark:border-slate-700/50">
-                    <td class="p-2.5 font-medium text-slate-800 dark:text-slate-200">${name}</td>
+                <tr class="border-b border-slate-200 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-900/40 transition">
+                    <td class="p-2.5 font-medium">${name}</td>
                     <td class="p-2.5 text-amber-600 dark:text-amber-400 font-semibold">${stats[name].dayShifts}</td>
                     <td class="p-2.5 text-indigo-600 dark:text-indigo-400 font-semibold">${stats[name].nightShifts}</td>
                     <td class="p-2.5 text-blue-600 dark:text-blue-400 font-semibold">${stats[name].uniqueDays.size}</td>
-                    <td class="p-2.5 font-bold text-slate-900 dark:text-white">${stats[name].total}</td>
+                    <td class="p-2.5 font-bold">${stats[name].total}</td>
                 </tr>
             `).join('');
 
             document.getElementById('totalLogsCount').textContent = attendanceLogs.length;
+            document.getElementById('kpiTotalLogs').textContent = attendanceLogs.length;
+            document.getElementById('kpiActiveRoster').textContent = staffList.length;
 
-            const logSearch = (document.getElementById('logSearchInput')?.value || '').toLowerCase();
-            const filteredLogs = attendanceLogs.filter(r => 
-                r.name.toLowerCase().includes(logSearch) || 
-                r.date.toLowerCase().includes(logSearch) || 
-                (r.shift && r.shift.toLowerCase().includes(logSearch))
-            );
+            const todayStr = new Date().toISOString().slice(0, 10);
+            const todayCount = attendanceLogs.filter(l => l.date === todayStr).length;
+            document.getElementById('kpiTodayCount').textContent = todayCount;
+
+            const filteredLogs = attendanceLogs.filter(r => {
+                const dayName = r.dayOfWeek || getDayOfWeekName(r.date);
+                const haystack = `${r.name} ${dayName} ${r.shift} ${r.date} ${r.time}`.toLowerCase();
+                return haystack.includes(logTerm);
+            });
 
             const logsTbody = document.getElementById('logsTableBody');
             logsTbody.innerHTML = filteredLogs.map(r => {
                 const dayName = r.dayOfWeek || getDayOfWeekName(r.date);
-                const sigDisplay = r.signature ? `<img src="${r.signature}" class="h-8 border bg-white rounded-lg p-0.5 shadow-sm" alt="Sig">` : '<span class="text-xs text-slate-400">Imported</span>';
+                const sigDisplay = r.signature ? `<img src="${r.signature}" class="h-7 border bg-white rounded-lg p-0.5" alt="Sig">` : '<span class="text-[10px] opacity-50">Imported</span>';
                 return `
-                    <tr class="border-b border-slate-200/50 dark:border-slate-700/50 text-slate-800 dark:text-slate-200">
+                    <tr class="border-b border-slate-200 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-900/40 transition">
                         <td class="p-2.5 font-medium">${r.name}</td>
-                        <td class="p-2.5 font-semibold">${dayName}</td>
+                        <td class="p-2.5 font-semibold opacity-80">${dayName}</td>
                         <td class="p-2.5">
-                            <span class="px-2.5 py-1 text-[10px] font-extrabold rounded-full ${r.shift === 'DAY' ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300' : 'bg-indigo-100 dark:bg-indigo-950/80 text-indigo-800 dark:text-indigo-300'}">
+                            <span class="px-2 py-0.5 text-[10px] font-bold rounded-full ${r.shift === 'DAY' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-indigo-50 text-indigo-700 border border-indigo-200'}">
                                 ${r.shift || 'DAY'}
                             </span>
                         </td>
-                        <td class="p-2.5">${r.date}</td>
-                        <td class="p-2.5">${r.time}</td>
+                        <td class="p-2.5 opacity-80">${r.date}</td>
+                        <td class="p-2.5 opacity-80">${r.time}</td>
                         <td class="p-2.5">${sigDisplay}</td>
                     </tr>
                 `;
-            }).join('') || `
-                <tr>
-                    <td colspan="6" class="p-8 text-center text-slate-400 dark:text-slate-500">
-                        <svg class="w-8 h-8 mx-auto mb-1.5 opacity-60" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        <p class="text-xs font-medium">No check-in logs match your search.</p>
-                    </td>
-                </tr>`;
+            }).join('') || `<tr><td colspan="6" class="p-4 opacity-60 text-center">No attendance records found matching query.</td></tr>`;
         }
 
         function exportToCSV() {
@@ -780,7 +982,7 @@
                 return;
             }
 
-            let csv = "Name,Day of Week,Shift,Date,Time\n";
+            let csv = "\uFEFFName,Day of Week,Shift,Date,Time\n";
             attendanceLogs.forEach(r => {
                 const dayName = r.dayOfWeek || getDayOfWeekName(r.date);
                 csv += `"${r.name}","${dayName}","${r.shift || 'DAY'}","${r.date}","${r.time}"\n`;
@@ -836,7 +1038,7 @@
 
                 localStorage.setItem('motorway_logs', JSON.stringify(attendanceLogs));
                 renderAdminData();
-                alert(`Successfully imported and appended ${addedCount} new records!`);
+                alert(`Successfully imported ${addedCount} new records!`);
                 e.target.value = '';
             };
             reader.readAsText(file);
@@ -847,7 +1049,10 @@
                 let doubleCheck = prompt("Type 'DELETE' to confirm clearing all data:");
                 if (doubleCheck === "DELETE") {
                     attendanceLogs = [];
+                    offlineQueue = [];
                     localStorage.setItem('motorway_logs', JSON.stringify(attendanceLogs));
+                    localStorage.setItem('motorway_offline_queue', JSON.stringify(offlineQueue));
+                    updateSyncBadge();
                     renderAdminData();
                     alert("Log archive cleared.");
                 }
